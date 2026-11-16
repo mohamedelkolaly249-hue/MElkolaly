@@ -756,7 +756,7 @@
 
 <script>
   const COMPETITION_QUESTIONS = [
-    // الفقرة الأولى: أسئلة مقاومة الأنسولين والسلفونيلوريا (10 أسئلة بـ 10 نقاط)
+    // --- الفقرة الأولى: أسئلة مقاومة الأنسولين والسلفونيلوريا (10 أسئلة بـ 10 نقاط) ---
     {
       num: 1, stage: 1,
       q: "Q1. Insulin resistance is defined as:",
@@ -828,7 +828,7 @@
       exp: "Hypoglycemia is a major adverse effect of sulfonylureas."
     },
 
-    // الفقرة الثانية: مرحلة الضعف (10 أسئلة بـ 20 نقطة)
+    // --- الفقرة الثانية: مرحلة الضعف (10 أسئلة بـ 20 نقطة) ---
     {
       num: 11, stage: 2,
       q: "Q11. Which sulfonylurea is particularly associated with prolonged hypoglycemia?",
@@ -900,7 +900,7 @@
       exp: "Severe renal impairment increases the risk of lactic acidosis with metformin."
     },
 
-    // الفقرة الثالثة: أسئلة تحت الضغط (10 أسئلة بـ 20 نقطة - 15 ثانية)
+    // --- الفقرة الثالثة: أسئلة تحت الضغط (10 أسئلة بـ 20 نقطة - 15 ثانية) ---
     {
       num: 21, stage: 2,
       q: "Q21. Long-term use of metformin may decrease the absorption of:",
@@ -1443,8 +1443,8 @@
             if (!roomState.lockedTeams.includes(otherTeam)) {
               roomState.buzzedTeam = null;
               roomState.buzzerOpen = true;
-              roomState.timer = 10; // 10 ثوانٍ للفريق الثاني عند انتهاء وقت الأول
-              roomState.statusMessage = `انتهى وقت ${timedOutName} — الجرس مفتوح الآن لـ ${otherTeamName}`;
+              roomState.timer = 10; // تعديل وقت الجرس للفريق الثاني إلى 10 ثوانٍ
+              roomState.statusMessage = `انتهى وقت ${timedOutName} — الجرس مفتوح الآن لـ ${otherTeamName} (10 ثوانٍ)`;
             } else {
               roomState.buzzedTeam = null;
               roomState.buzzerOpen = false;
@@ -1641,11 +1641,6 @@
       document.getElementById('host-team2-score').innerText = roomState.team2Score;
       document.getElementById('host-timer').innerText = roomState.timer;
 
-      const timerPillEl = document.getElementById('host-timer-pill');
-      if (timerPillEl) {
-        timerPillEl.classList.toggle('timer-urgent', !roomState.revealed && roomState.timer > 0 && roomState.timer <= 5);
-      }
-
       const box1 = document.getElementById('host-team1-box');
       const box2 = document.getElementById('host-team2-box');
       box1.classList.toggle('winner-glow', roomState.buzzedTeam === 'team1');
@@ -1720,9 +1715,9 @@
           } else if (roomState.wrongOptions.includes(i)) {
             style = 'bg-rose-950/85 border border-rose-500/80 text-rose-200 opacity-75';
           }
-          return `<button onclick="submitAnswer(${i})" class="en-font p-6 sm:p-7 rounded-2xl text-left font-extrabold text-xl sm:text-3xl flex items-center gap-5 cursor-pointer ${style}">
+          return `<button onclick="submitAnswer(${i})" class="en-font p-6 rounded-2xl text-left font-extrabold text-xl sm:text-3xl flex items-center gap-5 cursor-pointer ${style}">
             <span class="w-12 h-12 shrink-0 rounded-xl bg-slate-950 border border-amber-400/55 flex items-center justify-center gold-shimmer-text font-black text-lg sm:text-xl shadow">${letters[i]}</span>
-            <span class="leading-relaxed">${opt}</span>
+            <span>${opt}</span>
           </button>`;
         }).join('');
 
