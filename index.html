@@ -509,7 +509,7 @@
 
         <div class="flex items-center gap-3">
           <div id="host-timer-pill" class="flex items-center gap-2 px-5 py-1.5 rounded-full bg-slate-950 border border-amber-400/75 text-amber-300 font-black text-2xl shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all">
-            <svg class="w-6 h-6" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+            <svg class="w-6 h-6" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7 z"/></svg>
             <span id="host-timer">20</span>
           </div>
           <button onclick="toggleMute()" id="mute-btn" class="btn-3d p-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-amber-400/35 text-amber-200 text-xs sm:text-sm font-bold cursor-pointer">الصوت: مفعل</button>
@@ -602,7 +602,7 @@
         المرحلة الأولى (10 نقاط)
       </span>
       <span id="team-timer-pill" class="hidden px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400 text-amber-300 text-xs font-black">
-        15 ث
+        20 ث
       </span>
     </div>
 
@@ -988,7 +988,7 @@
     {
       num: 33, stage: 2,
       q: "Q33. GLP-1 mimetics produce all the following effects EXCEPT:",
-      opts: ["Increased insulin secretion.", "Decreased glucagon secretion.", "Delayed gastric emptying.", "Increased appetite."],
+      opts: ["Increased insulin secretion.", "Decreased glucagon secretion.", "Deadlayed gastric emptying.", "Increased appetite."],
       ans: 3,
       exp: "GLP-1 mimetics decrease appetite."
     },
@@ -1115,7 +1115,7 @@
     if (probePeer) { try { probePeer.destroy(); } catch (e) {} }
     probePeer = new Peer();
     probePeer.on('open', () => {
-      const conn = probePeer.connect('mnu-abakera-' + targetRoomId, { reliable: true });
+      const conn = probePeer.connect('mnu-abakera-' + targetRoomId, { reliable: false });
       conn.on('open', () => {
         conn.send({ type: 'PROBE' });
       });
@@ -1192,7 +1192,8 @@
             roomState.buzzerOpen = false;
             roomState.buzzedTeam = data.team;
             roomState.statusMessage = '';
-            roomState.timer = 10;
+            // بعد ضغط الجرس: للمرحلة 1 و 2 يبقى 15، وللتالتة 10
+            roomState.timer = (roomState.qIndex >= 20) ? 10 : 15;
             playTone('buzz');
             setArenaState(data.team);
             startTimer();
@@ -1275,7 +1276,7 @@
     peer = new Peer();
 
     peer.on('open', () => {
-      hostConn = peer.connect('mnu-abakera-' + roomId, { reliable: true });
+      hostConn = peer.connect('mnu-abakera-' + roomId, { reliable: false });
 
       hostConn.on('open', () => {
         hostConn.send({ type: 'JOIN_AUTO', teamName: enteredName });
@@ -1411,6 +1412,7 @@
     roomState.selectedOpt = null;
     roomState.statusMessage = '';
     
+    // الوقت العادي قبل الضغط: المرحلة الأولى والثانية 20، والمرحلة الثالثة 15
     roomState.timer = (roomState.qIndex >= 20) ? 15 : 20;
 
     setArenaState('neutral');
@@ -1477,8 +1479,9 @@
             if (!roomState.lockedTeams.includes(otherTeam)) {
               roomState.buzzedTeam = null;
               roomState.buzzerOpen = true;
-              roomState.timer = 10;
-              roomState.statusMessage = `انتهى وقت ${timedOutName} — الجرس مفتوح الآن لـ ${otherTeamName} (10 ثوانٍ)`;
+              // بعد الخطأ/انتهاء الوقت، وقت الفريق الثاني: للمرحلة 1 و 2 يبقى 15، وللتالتة 10
+              roomState.timer = (roomState.qIndex >= 20) ? 10 : 15;
+              roomState.statusMessage = `انتهى وقت ${timedOutName} — الجرس مفتوح الآن لـ ${otherTeamName} (${roomState.timer} ثوانٍ)`;
             } else {
               roomState.buzzedTeam = null;
               roomState.buzzerOpen = false;
@@ -1569,9 +1572,10 @@
       if (answeringTeam && !roomState.lockedTeams.includes(otherTeam)) {
         roomState.buzzedTeam = null;
         roomState.buzzerOpen = true;
-        roomState.timer = 10;
+        // بعد الخطأ، وقت الفريق الآخر: المرحلة 1 و 2 يبقى 15، والمرحلة 3 يبقى 10
+        roomState.timer = (roomState.qIndex >= 20) ? 10 : 15;
         roomState.revealed = false;
-        roomState.statusMessage = `إجابة خاطئة من ${wrongTeamName} — الجرس مفتوح الآن لـ ${otherTeamName} (10 ثوانٍ)`;
+        roomState.statusMessage = `إجابة خاطئة من ${wrongTeamName} — الجرس مفتوح الآن لـ ${otherTeamName} (${roomState.timer} ثوانٍ)`;
       } else {
         clearInterval(timerInterval);
         roomState.buzzedTeam = null;
@@ -1769,7 +1773,7 @@
       const teamStagePill = document.getElementById('team-stage-pill');
       if (roomState.stage === 2) {
         if (roomState.qIndex >= 20) {
-          teamStagePill.innerText = 'الفقرة الثالثة: تحت الضغط (15 ث • 20 نقطة)';
+          teamStagePill.innerText = 'الفقرة الثالثة: تحت الضغط (20 نقطة)';
         } else {
           teamStagePill.innerText = 'المرحلة الثانية: مرحلة الضعف (20 نقطة)';
         }
@@ -2113,7 +2117,8 @@
       ringMat1.color.setHex(0x3b82f6);
       matStrandB.color.setHex(0x3b82f6);
       dnaSpeed = 0.024;
-    } else if (state === 'correct') {
+    }
+    else if (state === 'correct') {
       targetCamX = 0;
       targetCamZ = 11.4;
       ringMat1.color.setHex(0x10b981);
