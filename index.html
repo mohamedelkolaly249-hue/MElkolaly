@@ -78,9 +78,10 @@
   }
 
   .logo-3d-ring-sm {
-    width: 44px; height: 44px; border-radius: 9999px; padding: 1.5px;
+    width: 52px; height: 52px; border-radius: 9999px; padding: 2px;
     background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #92400e 100%);
     display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
   }
   .logo-3d-ring-sm img { width: 100%; height: 100%; border-radius: 9999px; object-fit: cover; background: #050b1a; }
 
@@ -119,7 +120,14 @@
 <!-- ================= 1. شاشة البداية ================= -->
 <div id="lobby-screen" class="ui-layer items-center justify-center p-4 overflow-y-auto">
   <div class="royal-dark-card max-w-2xl w-full rounded-3xl p-6 sm:p-10 text-center my-auto">
-    <h1 class="text-4xl sm:text-6xl font-black gold-shimmer-text mb-4">مسابقة العباقرة</h1>
+    <!-- شعارات الكلية والجامعة -->
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <div class="logo-3d-ring-sm" title="جامعة المنصورة الأهلية"><img src="https://i.ibb.co/1n504H3/mans-logo.png" alt="جامعة المنصورة الأهلية" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'"></div>
+      <div class="logo-3d-ring-sm" title="كلية الصيدلة"><img src="https://i.ibb.co/v4b2f15/pharmacy-logo.png" alt="كلية الصيدلة" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2965/2965567.png'"></div>
+      <div class="logo-3d-ring-sm" title="قسم الأدوية والسموم"><img src="https://i.ibb.co/68X3p9q/tox-logo.png" alt="قسم الأدوية" onerror="this.src='https://cdn-icons-png.flaticon.com/512/822/822143.png'"></div>
+    </div>
+
+    <h1 class="text-4xl sm:text-6xl font-black gold-shimmer-text mb-2">مسابقة العباقرة</h1>
     <div class="text-xs sm:text-sm font-bold text-amber-300 mb-4">جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم</div>
     
     <div class="bg-slate-950/80 border border-amber-400/30 rounded-2xl py-3 px-5 mb-6 inline-block">
@@ -132,7 +140,7 @@
     </div>
 
     <div id="host-role-card" class="max-w-xs mx-auto">
-      <button onclick="createHostRoom()" class="dark-gold-btn w-full py-3.5 rounded-2xl font-black text-xl cursor-pointer">
+      <button id="create-host-btn" onclick="createHostRoom()" class="dark-gold-btn w-full py-3.5 rounded-2xl font-black text-xl cursor-pointer">
         <span class="gold-shimmer-text">Host</span>
       </button>
     </div>
@@ -142,7 +150,7 @@
         <label class="block text-xs font-bold text-amber-300 mb-1.5">اسم الفريق</label>
         <input id="custom-team-name-input" type="text" maxlength="22" placeholder="اكتب اسم فريقك..." class="w-full text-center text-lg font-black bg-slate-950 border border-amber-400/50 rounded-xl py-3 px-3 text-white">
       </div>
-      <button onclick="joinCompetitionAuto()" class="dark-gold-btn w-full py-3.5 rounded-2xl font-black text-base cursor-pointer">
+      <button id="join-auto-team-btn" onclick="joinCompetitionAuto()" class="dark-gold-btn w-full py-3.5 rounded-2xl font-black text-base cursor-pointer">
         <span class="gold-shimmer-text">انضمام للمسابقة</span>
       </button>
     </div>
@@ -205,6 +213,11 @@
     </div>
   </div>
 
+  <!-- شريط التقدم للأسئلة -->
+  <div class="max-w-6xl w-full mx-auto my-2 bg-slate-950/80 rounded-full h-2.5 overflow-hidden border border-amber-400/20">
+    <div id="question-progress-bar" class="gold-shimmer-bar h-full w-0 transition-all duration-300"></div>
+  </div>
+
   <div class="my-auto max-w-6xl w-full mx-auto py-2">
     <div id="buzz-banner" class="hidden mb-2 py-2 px-6 rounded-xl text-center font-black text-lg sm:text-xl shadow-xl"></div>
     <div class="royal-dark-card rounded-3xl p-5 sm:p-7 relative">
@@ -224,7 +237,7 @@
     </div>
   </div>
 
-  <!-- شريط التحكم السفلي (مسافة واسعة بين الأزرار) -->
+  <!-- شريط التحكم السفلي -->
   <div class="max-w-6xl w-full mx-auto royal-dark-card rounded-2xl p-3 flex flex-wrap items-center justify-between gap-4">
     <div class="flex flex-wrap items-center gap-5 sm:gap-7">
       <button id="next-q-btn" onclick="nextQuestion()" class="dark-gold-btn px-6 py-3 rounded-xl font-black text-sm cursor-pointer">
@@ -237,7 +250,7 @@
   </div>
 </div>
 
-<!-- ================= لوحة إعلان اسم الفقرة في منتصف الشاشة ================= -->
+<!-- ================= لوحة إعلان اسم الفقرة ================= -->
 <div id="round-intro-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
   <div class="royal-dark-card max-w-md w-full rounded-3xl p-7 text-center my-auto animate-slide-up">
     <div class="text-amber-300 font-extrabold text-xs mb-2">استعدوا للمواجهة</div>
@@ -262,10 +275,14 @@
     <div>
       <div class="text-[10px] text-amber-300 font-bold">اسم الفريق</div>
       <h2 id="team-header-name" class="text-lg font-black text-white">—</h2>
+      <div id="team-stage-pill" class="text-[10px] font-bold text-sky-300 mt-0.5">المرحلة الأولى</div>
     </div>
-    <div class="text-left bg-slate-950 px-3 py-1 rounded-xl border border-amber-400/35">
-      <div class="text-[9px] text-slate-400 font-bold">النقاط</div>
-      <div id="team-my-score" class="text-xl font-black gold-shimmer-text">0</div>
+    <div class="flex items-center gap-3">
+      <div id="team-timer-pill" class="hidden px-3 py-1 rounded-xl bg-slate-950 border border-amber-400 text-amber-300 font-black text-sm"></div>
+      <div class="text-left bg-slate-950 px-3 py-1 rounded-xl border border-amber-400/35">
+        <div class="text-[9px] text-slate-400 font-bold">النقاط</div>
+        <div id="team-my-score" class="text-xl font-black gold-shimmer-text">0</div>
+      </div>
     </div>
   </div>
 
@@ -275,6 +292,7 @@
     </div>
 
     <div id="team-buzzer-wrapper" class="buzzer-rig my-2">
+      <div id="buzzer-ring-anim" class="absolute inset-0 rounded-full border-2 border-amber-400/60 animate-ping pointer-events-none"></div>
       <div class="buzzer-chassis">
         <button id="team-buzzer-btn" onclick="pressBuzzer()" disabled class="buzzer-dome buzzer-dome-team1">
           <span id="buzzer-main-label" class="text-2xl font-black text-white">اضغط!</span>
@@ -286,8 +304,10 @@
   </div>
 
   <div id="team-end-area" class="hidden my-auto w-full max-w-md mx-auto">
-    <div class="royal-dark-card rounded-3xl p-6 text-center">
-      <h2 class="text-2xl font-black gold-shimmer-text mb-2">مببروووك!</h2>
+    <div id="team-end-card" class="royal-dark-card rounded-3xl p-6 text-center">
+      <div id="team-end-emoji" class="text-4xl mb-2">🏆</div>
+      <h2 id="team-end-headline" class="text-2xl font-black gold-shimmer-text mb-2">نتيجة المسابقة</h2>
+      <div id="team-end-subtext" class="text-xs font-bold text-slate-300 mb-3">انتهت المواجهة</div>
       <div id="team-end-scores" class="text-base font-black text-amber-300"></div>
     </div>
   </div>
@@ -327,42 +347,47 @@
 </div>
 
 <script>
-  // بنك الأسئلة الـ 35 الجديد مقسماً على مراحل المسابقة الخمس
+  // بنك الأسئلة الـ 35 مقسماً على 5 مراحل (كل مرحلة 7 أسئلة بدون أسئلة توصيل)
   const COMPETITION_QUESTIONS = [
-    { num: 1, stage: 1, roundName: "المرحلة الأولى", q: "Q1. Insulin resistance is best defined as:", opts: ["Complete absence of insulin secretion", "Failure of body cells to respond adequately to insulin", "Increased insulin sensitivity", "Destruction of pancreatic alpha cells"], ans: 1, exp: "الخلايا لا تستجيب للإنسولين بشكل طبيعي، وبالتالي يحتاج الجسم لجرعات أكبر." },
-    { num: 2, stage: 1, roundName: "المرحلة الأولى", q: "Q2. Which of the following drugs may cause insulin resistance?", opts: ["Metformin", "Acarbose", "Corticosteroids", "Sitagliptin"], ans: 2, exp: "Corticosteroids from the lecture can cause insulin resistance." },
-    { num: 3, stage: 1, roundName: "المرحلة الأولى", q: "Q3. Which of the following is NOT a precipitating factor for insulin resistance?", opts: ["Pregnancy", "Severe infection", "Corticosteroids", "Increased insulin receptor sensitivity"], ans: 3, exp: "زيادة حساسية المستقبلات تقلل insulin resistance." },
-    { num: 4, stage: 1, roundName: "المرحلة الأولى", q: "Q4. Which of the following drugs improves insulin receptor sensitivity?", opts: ["Glibenclamide", "Metformin", "Repaglinide", "Chlorpropamide"], ans: 1, exp: "Metformin improves insulin sensitivity." },
-    { num: 5, stage: 1, roundName: "المرحلة الأولى", q: "Q5. Which of the following is a first-generation sulfonylurea?", opts: ["Glimepiride", "Gliclazide", "Tolbutamide", "Glibenclamide"], ans: 2, exp: "Tolbutamide is a first-generation sulfonylurea." },
-    { num: 6, stage: 1, roundName: "المرحلة الأولى", q: "Q6. Which of the following is a third-generation sulfonylurea?", opts: ["Tolbutamide", "Chlorpropamide", "Gliclazide", "Glimepiride"], ans: 3, exp: "Glimepiride is a third-generation sulfonylurea." },
-    { num: 7, stage: 1, roundName: "المرحلة الأولى", q: "Q7. Sulfonylureas increase insulin secretion by:", opts: ["Opening ATP-sensitive potassium channels", "Closing ATP-sensitive potassium channels", "Blocking calcium channels", "Activating glucagon secretion"], ans: 1, exp: "Closure of K+ channels leads to insulin release." },
-    { num: 8, stage: 1, roundName: "المرحلة الأولى", q: "Q8. Closure of potassium channels in pancreatic beta cells results in:", opts: ["Hyperpolarization", "Beta-cell depolarization", "Decreased calcium influx", "Decreased insulin secretion"], ans: 1, exp: "K+ channel closure leads to depolarization." },
-    { num: 9, stage: 1, roundName: "المرحلة الأولى", q: "Q9. Sulfonylureas increase insulin secretion mainly by:", opts: ["Increasing insulin secreted during each pulse", "Increasing basal insulin secretion only", "Increasing insulin receptor numbers", "Inhibiting hepatic gluconeogenesis"], ans: 0, exp: "Increasing insulin secreted during each pulse." },
-    { num: 10, stage: 1, roundName: "المرحلة الأولى", q: "Q10. Which of the following is a major adverse effect of sulfonylureas?", opts: ["Lactic acidosis", "Hypoglycemia", "Flatulence", "Pancreatitis"], ans: 1, exp: "Hypoglycemia is a major adverse effect." },
+    // المرحلة الأولى: أساسيات ومقاومة الإنسولين (1 إلى 7)
+    { num: 1, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q1. Insulin resistance is best defined as:", opts: ["Complete absence of insulin secretion", "Failure of body cells to respond adequately to insulin", "Increased insulin sensitivity", "Destruction of pancreatic alpha cells"], ans: 1, exp: "الخلايا لا تستجيب للإنسولين بشكل طبيعي، وبالتالي يحتاج الجسم لجرعات أكبر." },
+    { num: 2, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q2. Which of the following drugs may cause insulin resistance?", opts: ["Metformin", "Acarbose", "Corticosteroids", "Sitagliptin"], ans: 2, exp: "Corticosteroids from the lecture can cause insulin resistance." },
+    { num: 3, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q3. Which of the following is NOT a precipitating factor for insulin resistance?", opts: ["Pregnancy", "Severe infection", "Corticosteroids", "Increased insulin receptor sensitivity"], ans: 3, exp: "زيادة حساسية المستقبلات تقلل insulin resistance." },
+    { num: 4, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q4. Which of the following drugs improves insulin receptor sensitivity?", opts: ["Glibenclamide", "Metformin", "Repaglinide", "Chlorpropamide"], ans: 1, exp: "Metformin improves insulin sensitivity." },
+    { num: 5, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q5. Which of the following is a first-generation sulfonylurea?", opts: ["Glimepiride", "Gliclazide", "Tolbutamide", "Glibenclamide"], ans: 2, exp: "Tolbutamide is a first-generation sulfonylurea." },
+    { num: 6, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q6. Which of the following is a third-generation sulfonylurea?", opts: ["Tolbutamide", "Chlorpropamide", "Gliclazide", "Glimepiride"], ans: 3, exp: "Glimepiride is a third-generation sulfonylurea." },
+    { num: 7, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q7. Sulfonylureas increase insulin secretion by:", opts: ["Opening ATP-sensitive potassium channels", "Closing ATP-sensitive potassium channels", "Blocking calcium channels", "Activating glucagon secretion"], ans: 1, exp: "Closure of K+ channels leads to insulin release." },
 
-    { num: 11, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q11. Which sulfonylurea is particularly associated with prolonged hypoglycemia?", opts: ["Chlorpropamide", "Tolbutamide", "Gliclazide", "Glimepiride"], ans: 0, exp: "Chlorpropamide طويل المفعول ويزيد خطر hypoglycemia." },
-    { num: 12, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q12. Sulfonylureas are ineffective in type 1 DM because they:", opts: ["Increase intestinal glucose absorption", "Require functioning pancreatic beta cells", "Block insulin receptors", "Increase glucagon secretion"], ans: 1, exp: "Require functioning pancreatic beta cells." },
-    { num: 13, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q13. Which of the following belongs to the meglitinide group?", opts: ["Metformin", "Repaglinide", "Pioglitazone", "Acarbose"], ans: 1, exp: "Repaglinide belongs to meglitinides." },
-    { num: 14, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q14. Meglitinides should be taken:", opts: ["Immediately after meals", "Just before meals", "At bedtime", "Once weekly"], ans: 1, exp: "Just before meals (Fast onset + Short duration)." },
-    { num: 15, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q15. Which drug can be used in patients allergic to sulfonylureas because it does not contain sulfur?", opts: ["Repaglinide", "Glibenclamide", "Chlorpropamide", "Glimepiride"], ans: 0, exp: "Repaglinide does not contain sulfur." },
-    { num: 16, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q16. The major adverse effect of meglitinides is:", opts: ["Lactic acidosis", "Hypoglycemia", "Fluid retention", "Hepatotoxicity"], ans: 1, exp: "Hypoglycemia is major." },
-    { num: 17, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q17. Metformin decreases blood glucose mainly by:", opts: ["Increasing insulin secretion", "Decreasing hepatic gluconeogenesis", "Closing potassium channels", "Increasing glucagon secretion"], ans: 1, exp: "Decreasing hepatic gluconeogenesis." },
-    { num: 18, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q18. Why does metformin rarely cause hypoglycemia when used alone?", opts: ["It increases glucagon secretion", "It does not stimulate insulin secretion", "It blocks glucose absorption completely", "It increases insulin degradation"], ans: 1, exp: "It does not stimulate insulin secretion directly." },
+    // المرحلة الثانية: الدابل (×2) - الأجيال والمحفزات (8 إلى 14)
+    { num: 8, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q8. Closure of potassium channels in pancreatic beta cells results in:", opts: ["Hyperpolarization", "Beta-cell depolarization", "Decreased calcium influx", "Decreased insulin secretion"], ans: 1, exp: "K+ channel closure leads to depolarization." },
+    { num: 9, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q9. Sulfonylureas increase insulin secretion mainly by:", opts: ["Increasing insulin secreted during each pulse", "Increasing basal insulin secretion only", "Increasing insulin receptor numbers", "Inhibiting hepatic gluconeogenesis"], ans: 0, exp: "Increasing insulin secreted during each pulse." },
+    { num: 10, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q10. Which of the following is a major adverse effect of sulfonylureas?", opts: ["Lactic acidosis", "Hypoglycemia", "Flatulence", "Pancreatitis"], ans: 1, exp: "Hypoglycemia is a major adverse effect." },
+    { num: 11, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q11. Which sulfonylurea is particularly associated with prolonged hypoglycemia?", opts: ["Chlorpropamide", "Tolbutamide", "Gliclazide", "Glimepiride"], ans: 0, exp: "Chlorpropamide طويل المفعول ويزيد خطر hypoglycemia." },
+    { num: 12, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q12. Sulfonylureas are ineffective in type 1 DM because they:", opts: ["Increase intestinal glucose absorption", "Require functioning pancreatic beta cells", "Block insulin receptors", "Increase glucagon secretion"], ans: 1, exp: "Require functioning pancreatic beta cells." },
+    { num: 13, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q13. Which of the following belongs to the meglitinide group?", opts: ["Metformin", "Repaglinide", "Pioglitazone", "Acarbose"], ans: 1, exp: "Repaglinide belongs to meglitinides." },
+    { num: 14, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q14. Meglitinides should be taken:", opts: ["Immediately after meals", "Just before meals", "At bedtime", "Once weekly"], ans: 1, exp: "Just before meals (Fast onset + Short duration)." },
 
-    { num: 19, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q19. Which of the following is the most common adverse effect of metformin?", opts: ["GIT disturbances", "Hypoglycemia", "Peripheral edema", "Pancreatitis"], ans: 0, exp: "GIT disturbances." },
-    { num: 20, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q20. Metformin-associated lactic acidosis is more likely to occur in patients with:", opts: ["Severe renal impairment", "Mild headache", "Hyperthyroidism", "Iron deficiency anemia"], ans: 0, exp: "Severe renal impairment." },
-    { num: 21, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q21. Long-term use of metformin may decrease the absorption of:", opts: ["Vitamin C", "Vitamin B12", "Vitamin D", "Vitamin K"], ans: 1, exp: "Vitamin B12." },
-    { num: 22, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q22. Metformin may be beneficial in patients with polycystic ovary syndrome (PCOS) because it:", opts: ["Increases androgen levels", "Lowers androgen levels and improves ovulation", "Increases insulin resistance", "Suppresses ovarian function"], ans: 1, exp: "Lowers androgen levels and improves ovulation." },
-    { num: 23, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q23. Thiazolidinediones act mainly through activation of:", opts: ["PPAR-γ", "DPP-4", "ATP-sensitive potassium channels", "Alpha-glucosidase"], ans: 0, exp: "PPAR-γ." },
-    { num: 24, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q24. Which of the following is a thiazolidinedione?", opts: ["Sitagliptin", "Pioglitazone", "Repaglinide", "Acarbose"], ans: 1, exp: "Pioglitazone." },
+    // المرحلة الثالثة: المجموعات الدوائية Mechanism & Adverse Effects (15 إلى 21)
+    { num: 15, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q15. Which drug can be used in patients allergic to sulfonylureas because it does not contain sulfur?", opts: ["Repaglinide", "Glibenclamide", "Chlorpropamide", "Glimepiride"], ans: 0, exp: "Repaglinide does not contain sulfur." },
+    { num: 16, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q16. The major adverse effect of meglitinides is:", opts: ["Lactic acidosis", "Hypoglycemia", "Fluid retention", "Hepatotoxicity"], ans: 1, exp: "Hypoglycemia is major." },
+    { num: 17, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q17. Metformin decreases blood glucose mainly by:", opts: ["Increasing insulin secretion", "Decreasing hepatic gluconeogenesis", "Closing potassium channels", "Increasing glucagon secretion"], ans: 1, exp: "Decreasing hepatic gluconeogenesis." },
+    { num: 18, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q18. Why does metformin rarely cause hypoglycemia when used alone?", opts: ["It increases glucagon secretion", "It does not stimulate insulin secretion", "It blocks glucose absorption completely", "It increases insulin degradation"], ans: 1, exp: "It does not stimulate insulin secretion directly." },
+    { num: 19, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q19. Which of the following is the most common adverse effect of metformin?", opts: ["GIT disturbances", "Hypoglycemia", "Peripheral edema", "Pancreatitis"], ans: 0, exp: "GIT disturbances." },
+    { num: 20, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q20. Metformin-associated lactic acidosis is more likely to occur in patients with:", opts: ["Severe renal impairment", "Mild headache", "Hyperthyroidism", "Iron deficiency anemia"], ans: 0, exp: "Severe renal impairment." },
+    { num: 21, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q21. Long-term use of metformin may decrease the absorption of:", opts: ["Vitamin C", "Vitamin B12", "Vitamin D", "Vitamin K"], ans: 1, exp: "Vitamin B12." },
 
+    // المرحلة الرابعة: السرعة البرقية PPAR & GLP (22 إلى 28)
+    { num: 22, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q22. Metformin may be beneficial in patients with polycystic ovary syndrome (PCOS) because it:", opts: ["Increases androgen levels", "Lowers androgen levels and improves ovulation", "Increases insulin resistance", "Suppresses ovarian function"], ans: 1, exp: "Lowers androgen levels and improves ovulation." },
+    { num: 23, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q23. Thiazolidinediones act mainly through activation of:", opts: ["PPAR-γ", "DPP-4", "ATP-sensitive potassium channels", "Alpha-glucosidase"], ans: 0, exp: "PPAR-γ." },
+    { num: 24, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q24. Which of the following is a thiazolidinedione?", opts: ["Sitagliptin", "Pioglitazone", "Repaglinide", "Acarbose"], ans: 1, exp: "Pioglitazone." },
     { num: 25, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q25. Thiazolidinediones increase glucose uptake mainly by increasing the number of:", opts: ["GLUT1", "GLUT2", "GLUT3", "GLUT4"], ans: 3, exp: "GLUT4." },
     { num: 26, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q26. Why do thiazolidinediones have a slow onset of action?", opts: ["They are poorly absorbed", "They depend on gene regulation", "They require insulin injection", "They inhibit intestinal enzymes"], ans: 1, exp: "They depend on gene regulation." },
     { num: 27, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q27. Which thiazolidinedione has a more favorable effect on serum lipids?", opts: ["Rosiglitazone", "Pioglitazone", "Both have identical effects", "Neither affects serum lipids"], ans: 1, exp: "Pioglitazone." },
     { num: 28, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q28. Thiazolidinediones should be avoided in patients with:", opts: ["Bronchial asthma", "Congestive heart failure", "Iron deficiency anemia", "Peptic ulcer"], ans: 1, exp: "Congestive heart failure (Fluid retention)." },
-    { num: 29, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q29. Which drug has a greater reported risk of myocardial infarction compared with pioglitazone in the lecture?", opts: ["Rosiglitazone", "Metformin", "Repaglinide", "Acarbose"], ans: 0, exp: "Rosiglitazone." },
-    { num: 30, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q30. Acarbose decreases carbohydrate digestion by inhibiting:", opts: ["DPP-4", "Alpha-glucosidase", "PPAR-γ", "SGLT2"], ans: 1, exp: "Alpha-glucosidase." },
 
+    // المرحلة الخامسة: تحت الضغط والتحدي الأخير (29 إلى 35)
+    { num: 29, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q29. Which drug has a greater reported risk of myocardial infarction compared with pioglitazone in the lecture?", opts: ["Rosiglitazone", "Metformin", "Repaglinide", "Acarbose"], ans: 0, exp: "Rosiglitazone." },
+    { num: 30, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q30. Acarbose decreases carbohydrate digestion by inhibiting:", opts: ["DPP-4", "Alpha-glucosidase", "PPAR-γ", "SGLT2"], ans: 1, exp: "Alpha-glucosidase." },
     { num: 31, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q31. GLP-1 is normally inactivated by which enzyme?", opts: ["Alpha-glucosidase", "DPP-4", "ACE", "Lipase"], ans: 1, exp: "DPP-4." },
     { num: 32, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q32. Which of the following is a GLP-1 mimetic?", opts: ["Sitagliptin", "Exenatide", "Dapagliflozin", "Pramlintide"], ans: 1, exp: "Exenatide." },
     { num: 33, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q33. GLP-1 mimetics produce all the following effects EXCEPT:", opts: ["Increased insulin secretion", "Decreased glucagon secretion", "Delayed gastric emptying", "Increased appetite"], ans: 3, exp: "Increased appetite (GLP-1 decreases appetite)." },
@@ -619,10 +644,8 @@
           document.getElementById('team-screen').classList.remove('hidden');
 
           const btn = document.getElementById('team-buzzer-btn');
-          const aura = document.getElementById('buzzer-aura');
           if (myRole === 'team2') {
             btn.className = "buzzer-dome buzzer-dome-team2";
-            aura.className = "buzzer-glow-aura bg-blue-500";
           }
           renderUI();
         } else if (data.type === 'SESSION_REPLACED') {
@@ -677,17 +700,6 @@
       }
     }
 
-    if (roomState.qIndex === 9 && roomState.stage === 1 && !roomState.showTransition) {
-      clearInterval(timerInterval);
-      roomState.showTransition = true;
-      roomState.buzzerOpen = false;
-      playTone('win');
-      setArenaState('neutral');
-      broadcastState();
-      renderUI();
-      return;
-    }
-
     if (roomState.qIndex >= COMPETITION_QUESTIONS.length - 1) {
       endMatch();
       return;
@@ -721,7 +733,7 @@
 
     roomState.stage = 2;
     roomState.showTransition = false;
-    roomState.qIndex = 10;
+    roomState.qIndex = 7;
     showRoundIntro(2, "المرحلة الثانية: وصلنا للدابل", "الأسئلة القادمة مضاعفة النقاط (×2)");
   }
 
@@ -957,11 +969,6 @@
         timerPillEl.classList.toggle('timer-urgent', !roomState.revealed && roomState.timer > 0 && roomState.timer <= 5);
       }
 
-      const box1 = document.getElementById('host-team1-box');
-      const box2 = document.getElementById('host-team2-box');
-      box1.classList.toggle('winner-glow', roomState.buzzedTeam === 'team1');
-      box2.classList.toggle('winner-glow', roomState.buzzedTeam === 'team2');
-
       const stagePill = document.getElementById('stage-indicator-pill');
       const roundTitleDisp = document.getElementById('round-title-display');
       if (roomState.currentQ) {
@@ -969,22 +976,11 @@
         roundTitleDisp.innerText = roomState.currentQ.roundName;
       }
 
-      const transModal = document.getElementById('stage-transition-modal');
-      if (roomState.showTransition) {
-        transModal.classList.remove('hidden');
-        transModal.classList.add('flex');
-      } else {
-        transModal.classList.add('hidden');
-        transModal.classList.remove('flex');
-      }
-
       const currentNum = roomState.qIndex + 1;
       document.getElementById('question-progress-bar').style.width = `${Math.max(5, (currentNum / 35) * 100)}%`;
 
       const nextBtnLabel = document.getElementById('next-q-btn-label');
-      if (currentNum === 10 && roomState.stage === 1) {
-        nextBtnLabel.innerText = 'الانتقال للمرحلة الثانية (الضعف)';
-      } else if (currentNum >= 35) {
+      if (currentNum >= 35) {
         nextBtnLabel.innerText = 'اكتملت الأسئلة (35/35)';
       } else {
         nextBtnLabel.innerText = `السؤال التالي (${currentNum + 1}/35)`;
@@ -1069,29 +1065,21 @@
         scoresEl.innerText = `${roomState.team1Name}: ${roomState.team1Score}  |  ${roomState.team2Name}: ${roomState.team2Score}`;
 
         if (roomState.sessionClosed) {
-          card.className = 'royal-dark-card royal-crown-card rounded-3xl p-8 text-center';
           emoji.innerText = '🎓✨';
           headline.innerText = 'تمت المسابقة بنجاح!';
-          headline.className = 'text-3xl sm:text-4xl font-black gold-shimmer-text mb-3';
           subtext.innerText = 'كل الشكر والتقدير لمشاركتكم المميزة في مسابقة العباقرة بكلية الصيدلة - جامعة المنصورة الأهلية.';
         } else if (roomState.winnerTeam === myRole) {
-          card.className = 'royal-dark-card royal-crown-card winner-glow rounded-3xl p-8 text-center';
           emoji.innerText = '🏆🎓';
           headline.innerText = 'مببروووك!';
-          headline.className = 'text-4xl sm:text-5xl font-black gold-shimmer-text mb-3';
           subtext.innerText = 'ألف مبروك الفوز في مسابقة العباقرة! أداء علمي مشرف.';
         } else if (roomState.winnerTeam === 'tie') {
-          card.className = 'royal-dark-card rounded-3xl p-8 text-center border border-sky-400/50';
           emoji.innerText = '🤝🎓';
           headline.innerText = 'تعادل بطولي!';
-          headline.className = 'text-4xl font-black text-sky-400 mb-3';
           subtext.innerText = 'منافسة قوية وتعادل مستحق بين الفريقين!';
         } else {
-          card.className = 'royal-dark-card rounded-3xl p-8 text-center border border-rose-400/40';
           emoji.innerText = '💪🎓';
           headline.innerText = 'متزعلش متعوضة!';
-          headline.className = 'text-3xl sm:text-4xl font-black text-rose-300 mb-3';
-          subtext.innerText = 'متزعلش متعوضة المرة الجاية بإذن الله.. عملتوا ماتش عالمي وعاش على مجهودكم!';
+          subtext.innerText = 'عملتوا ماتش عالمي وعاش على مجهودكم!';
         }
         return;
       } else {
@@ -1127,15 +1115,12 @@
         statusText.innerText = connectedCount < 2
           ? "تم تسجيل فريقك — في انتظار انضمام الفريق المنافس..."
           : "يلا نبدأ كملنا! في انتظار بدء السؤال الأول...";
-        statusText.className = "text-base sm:text-lg font-black text-emerald-400";
       } else if (roomState.showTransition) {
         buzzWrapper.classList.remove('hidden');
         optsBox.classList.add('hidden');
         statusText.innerText = "هننتقل للمرحلة الجاية: مرحلة الضعف (×2)";
-        statusText.className = "text-base sm:text-lg font-black text-amber-300";
       } else if (roomState.buzzedTeam === myRole && !roomState.revealed) {
         statusText.innerText = `⚡ اختر الإجابة الآن (${roomState.timer} ثانية):`;
-        statusText.className = "text-base sm:text-lg font-black text-emerald-400";
         buzzWrapper.classList.add('hidden');
         optsBox.classList.remove('hidden');
         const letters = ['A', 'B', 'C', 'D'];
@@ -1151,19 +1136,13 @@
         optsBox.classList.add('hidden');
         if (isTeamLocked && !roomState.revealed) {
           statusText.innerText = "انتهت فرصتك في هذا السؤال — الفرصة للفريق المنافس";
-          statusText.className = "text-base sm:text-lg font-black text-rose-400";
         } else if (roomState.buzzerOpen) {
-          statusText.innerText = roomState.lockedTeams.length > 0
-            ? "فرصتك الذهبية! اضغط الجرس للإجابة"
-            : "الجرس متاح — اضغط للإجابة";
-          statusText.className = "text-base sm:text-lg font-black text-amber-300";
+          statusText.innerText = roomState.lockedTeams.length > 0 ? "فرصتك الذهبية! اضغط الجرس للإجابة" : "الجرس متاح — اضغط للإجابة";
         } else if (roomState.buzzedTeam) {
           const otherName = roomState.buzzedTeam === 'team1' ? roomState.team1Name : roomState.team2Name;
           statusText.innerText = `يجيب الآن: ${otherName}`;
-          statusText.className = "text-base sm:text-lg font-black text-rose-400";
         } else {
           statusText.innerText = "في انتظار السؤال التالي...";
-          statusText.className = "text-base font-bold text-slate-300";
         }
       }
     }
