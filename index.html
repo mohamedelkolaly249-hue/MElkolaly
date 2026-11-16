@@ -21,7 +21,8 @@
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     background-color: #02050e !important;
     color: #f8fafc;
     perspective: 1500px;
@@ -32,7 +33,7 @@
     z-index: 0;
     pointer-events: none;
   }
-  .ui-layer { position: relative; z-index: 10; height: 100vh; width: 100vw; display: flex; flex-direction: column; }
+  .ui-layer { position: relative; z-index: 10; min-height: 100vh; width: 100vw; display: flex; flex-direction: column; }
 
   @keyframes goldShine {
     0% { background-position: 0% 50%; }
@@ -72,13 +73,10 @@
 
   .gold-divider-3d {
     display: inline-block;
-    width: 2px;
-    height: 18px;
-    border-radius: 99px;
+    width: 2px; height: 18px; border-radius: 99px;
     background: linear-gradient(180deg, #fef08a 0%, #f59e0b 50%, #92400e 100%);
     box-shadow: 0 0 10px rgba(250, 204, 21, 0.75);
-    margin: 0 12px;
-    vertical-align: middle;
+    margin: 0 12px; vertical-align: middle;
   }
 
   .royal-dark-card {
@@ -87,7 +85,6 @@
     backdrop-filter: blur(26px);
     box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.92), 0 4px 0 rgba(15, 23, 42, 0.9), inset 0 1px 1px rgba(254, 240, 138, 0.16);
     transform-style: preserve-3d;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .royal-crown-card {
     background: linear-gradient(165deg, rgba(11, 21, 46, 0.95) 0%, rgba(3, 6, 16, 0.99) 100%);
@@ -120,7 +117,7 @@
 
   .finale-3d-rig { position: relative; width: 155px; height: 155px; margin: 0 auto 14px auto; display: flex; align-items: center; justify-content: center; }
   .finale-orbit-outer { position: absolute; inset: -12px; border-radius: 9999px; border: 2.5px dashed rgba(253, 224, 71, 0.8); animation: spinSlow 11s linear infinite; pointer-events: none; }
-  .finale-orbit-inner { position: absolute; inset: -3px; border-radius: 9999px; border: 2px solid rgba(56, 189, 248, 0.35); border-top-color: #fde047; animation: spinReverse 7s linear infinite; pointer-events: none; }
+  .finale-orbit-inner { position: absolute; inset: -3px; border-radius: 9999px; border: 2px solid rgba(56, 189, 248, 0.35); border-top-color: #fde047; border-bottom-color: #f59e0b; animation: spinReverse 7s linear infinite; pointer-events: none; }
   .finale-dome-chassis { position: relative; width: 132px; height: 132px; border-radius: 9999px; background: linear-gradient(145deg, #1e293b, #060b16); padding: 10px; border: 2px solid rgba(253, 224, 71, 0.75); display: flex; align-items: center; justify-content: center; }
   .finale-dome-core { width: 100%; height: 100%; border-radius: 9999px; background: radial-gradient(circle at 50% 28%, #1e3a8a 0%, #09132c 65%, #02050e 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
@@ -138,7 +135,7 @@
   .btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.65), 0 4px 8px rgba(0, 0, 0, 0.4); }
 
   .qr-white-card { background: #ffffff; padding: 14px; border-radius: 22px; border: 2px solid rgba(245, 158, 11, 0.7); box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(245, 158, 11, 0.22); display: inline-block; }
-  .glass-3d-backdrop { background: radial-gradient(circle at 50% 50%, rgba(6, 13, 30, 0.45) 0%, rgba(2, 5, 14, 0.72) 100%) !important; backdrop-filter: blur(5px); }
+  .glass-3d-backdrop { background: radial-gradient(circle at 50% 50%, rgba(6, 13, 30, 0.65) 0%, rgba(2, 5, 14, 0.85) 100%) !important; backdrop-filter: blur(8px); }
 
   @keyframes timerUrgentPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
   .timer-urgent { border-color: #f43f5e !important; color: #fda4af !important; box-shadow: 0 0 28px rgba(244, 63, 94, 0.6) !important; animation: timerUrgentPulse 0.5s ease-in-out infinite; }
@@ -200,11 +197,11 @@
     <div class="bg-slate-950/90 border border-amber-400/35 rounded-2xl py-3.5 px-7 mb-8 inline-block max-w-full shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
       <div class="text-xs font-extrabold gold-shimmer-text tracking-wider mb-1.5">تحت إشراف</div>
       <div class="text-sm sm:text-base font-black text-white flex flex-wrap items-center justify-center">
-        <span>أ.د/ مريهان مقلد</span>
+        <span>أ.د/ مريهان مقلد[cite: 3]</span>
         <span class="gold-divider-3d"></span>
-        <span>أ.م.د/ مروة زغلول</span>
+        <span>أ.م.د/ مروة زغلول[cite: 3]</span>
         <span class="gold-divider-3d"></span>
-        <span>م.م/ هبة بهريز</span>
+        <span>م.م/ هبة بهريز[cite: 3]</span>
       </div>
     </div>
 
@@ -230,14 +227,14 @@
   </div>
 </div>
 
-<!-- ================= 2. شاشة الانتظار للهوست ================= -->
+<!-- ================= 2. شاشة انتظار الفريقين للهوست ================= -->
 <div id="host-waiting-screen" class="ui-layer hidden items-center justify-center p-4 overflow-y-auto">
   <div class="royal-dark-card royal-crown-card max-w-5xl w-full rounded-3xl p-7 sm:p-10 text-center my-auto animate-slide-up">
     
     <div class="flex items-center justify-center gap-4 sm:gap-6 mb-4">
       <div class="logo-3d-ring-sm"><img src="mnu-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
       <div class="text-center px-2">
-        <div class="text-xs sm:text-sm font-extrabold text-amber-300/90">كلية الصيدلة • قسم الأدوية والسموم</div>
+        <div class="text-xs sm:text-sm font-extrabold text-amber-300/90">كلية الصيدلة • قسم الأدوية والسموم[cite: 2, 3]</div>
         <div class="text-2xl sm:text-3xl font-black gold-shimmer-text">مسابقة العباقرة</div>
       </div>
       <div class="logo-3d-ring-sm"><img src="pharmacy-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
@@ -275,17 +272,17 @@
 
     <div class="mt-6 text-xs sm:text-sm font-black text-slate-300 flex flex-wrap items-center justify-center">
       <span class="gold-shimmer-text ml-2">تحت إشراف:</span>
-      <span>أ.د/ مريهان مقلد</span>
+      <span>أ.د/ مريهان مقلد[cite: 3]</span>
       <span class="gold-divider-3d"></span>
-      <span>أ.م.د/ مروة زغلول</span>
+      <span>أ.م.د/ مروة زغلول[cite: 3]</span>
       <span class="gold-divider-3d"></span>
-      <span>م.م/ هبة بهريز</span>
+      <span>م.م/ هبة بهريز[cite: 3]</span>
     </div>
   </div>
 </div>
 
-<!-- ================= 3. شاشة استوديو اللعب الرئيسية للهوست ================= -->
-<div id="host-game-screen" class="ui-layer hidden p-3 sm:p-5 justify-between">
+<!-- ================= 3. شاشة استوديو اللعب الرئيسية للهوست (بشاشة واسعة وسكرول وشاشة إعلان الفقرات) ================= -->
+<div id="host-game-screen" class="ui-layer hidden p-3 sm:p-5 justify-between overflow-y-auto">
   <div class="max-w-7xl w-full mx-auto grid grid-cols-12 gap-4 items-center">
     <div id="host-team1-box" class="col-span-4 royal-dark-card rounded-2xl p-3.5 sm:p-4 border-r-2 border-r-rose-500 flex items-center justify-between">
       <div class="flex items-center gap-4">
@@ -331,7 +328,7 @@
     </div>
   </div>
 
-  <div class="my-auto max-w-7xl w-full mx-auto">
+  <div class="my-auto max-w-7xl w-full mx-auto py-3">
     <div id="buzz-banner" class="hidden mb-3 py-3 px-8 rounded-2xl text-center font-black text-2xl sm:text-3xl shadow-2xl transition-all"></div>
 
     <div class="royal-dark-card royal-crown-card rounded-3xl p-6 sm:p-10 relative">
@@ -362,7 +359,7 @@
     </div>
   </div>
 
-  <!-- شريط التحكم السفلي (بمسافة أوسع بين أزرار السؤال التالي وفتح الجرس وإظهار الإجابة) -->
+  <!-- شريط التحكم السفلي مع تباعد واسع بين الأزرار -->
   <div class="max-w-7xl w-full mx-auto royal-dark-card rounded-2xl p-3.5 sm:px-6 flex flex-wrap items-center justify-between gap-4">
     <div class="flex flex-wrap items-center gap-5 sm:gap-8">
       <button id="next-q-btn" onclick="nextQuestion()" class="dark-gold-btn px-7 py-3.5 rounded-xl font-black text-sm sm:text-base cursor-pointer inline-flex items-center gap-2.5">
@@ -381,11 +378,11 @@
 
     <div class="hidden xl:flex items-center text-xs sm:text-sm font-black text-slate-200">
       <span class="gold-shimmer-text ml-2">تحت إشراف:</span>
-      <span>أ.د/ مريهان مقلد</span>
+      <span>أ.د/ مريهان مقلد[cite: 3]</span>
       <span class="gold-divider-3d"></span>
-      <span>أ.م.د/ مروة زغلول</span>
+      <span>أ.م.د/ مروة زغلول[cite: 3]</span>
       <span class="gold-divider-3d"></span>
-      <span>م.م/ هبة بهريز</span>
+      <span>م.م/ هبة بهريز[cite: 3]</span>
     </div>
 
     <div class="flex items-center">
@@ -397,7 +394,7 @@
   </div>
 </div>
 
-<!-- ================= نافذة إعلان اسم الفقرة قبل بدئها ================= -->
+<!-- ================= لوحة إعلان اسم الفقرة في منتصف الشاشة ================= -->
 <div id="round-intro-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
   <div class="royal-dark-card royal-crown-card max-w-lg w-full rounded-3xl p-8 text-center my-auto animate-slide-up">
     <div class="text-amber-300 font-extrabold text-xs tracking-wider mb-2">استعدوا للمواجهة • مسابقة العباقرة</div>
@@ -409,7 +406,28 @@
   </div>
 </div>
 
-<!-- ================= شاشة الموبايل ================= -->
+<!-- ================= 4. شاشة الانتقال للمرحلة الثانية ================= -->
+<div id="stage-transition-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
+  <div class="royal-dark-card royal-crown-card winner-glow max-w-xl w-full rounded-3xl p-8 text-center my-auto animate-slide-up">
+    <div class="inline-block px-4 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-black mb-3">
+      اكتملت المرحلة الأولى
+    </div>
+    <h2 class="text-3xl sm:text-5xl font-black gold-shimmer-text mb-3 leading-tight">
+      هننتقل للمرحلة الجاية! ⚡
+    </h2>
+    <p class="text-xl sm:text-2xl font-black text-white mb-2">
+      المرحلة الثانية: وصلنا للدابل (×2)
+    </p>
+    <p class="text-sm text-slate-300 mb-6">
+      الأسئلة القادمة كل سؤال بـ <span class="text-amber-300 font-black">20 نقطة كاملة</span>
+    </p>
+    <button id="continue-stage2-btn" onclick="startStageTwo()" class="dark-gold-btn px-10 py-4 rounded-2xl font-black text-lg cursor-pointer">
+      <span class="gold-shimmer-text">بدء المرحلة الثانية (الدابل)</span>
+    </button>
+  </div>
+</div>
+
+<!-- ================= 5. شاشة الموبايل ================= -->
 <div id="team-screen" class="ui-layer hidden p-4 justify-between">
   <div class="royal-dark-card rounded-2xl p-3.5 px-4 flex items-center justify-between border-b border-amber-400/40">
     <div class="flex items-center gap-3">
@@ -432,7 +450,7 @@
     </div>
 
     <div id="team-status-box" class="w-full royal-dark-card rounded-2xl p-3.5 text-center">
-      <div id="team-status-text" class="text-base sm:text-lg font-black text-amber-300">في انتظار بدء المسابقة...</div>
+      <div id="team-status-text" class="text-base sm:text-lg font-black text-amber-300">في انتظار اكتمال الفريقين وبدء المسابقة...</div>
     </div>
 
     <div id="team-buzzer-wrapper" class="buzzer-rig my-2">
@@ -553,17 +571,17 @@
     <div id="goodbye-final-scores" class="text-sm sm:text-lg font-black text-amber-300 bg-slate-950/90 border border-amber-400/35 rounded-xl py-2.5 px-6 mb-5 inline-block shadow-lg"></div>
 
     <div class="text-sm sm:text-base font-extrabold text-amber-200 mb-5">
-      جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم
+      جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم[cite: 2, 3]
     </div>
 
     <div class="bg-slate-950/90 border border-amber-400/35 rounded-2xl py-3.5 px-7 mb-6 inline-block shadow-inner">
       <div class="text-xs gold-shimmer-text font-extrabold mb-1.5">تحت إشراف</div>
       <div class="text-sm sm:text-base font-black text-white flex flex-wrap items-center justify-center">
-        <span>أ.د/ مريهان مقلد</span>
+        <span>أ.د/ مريهان مقلد[cite: 3]</span>
         <span class="gold-divider-3d"></span>
-        <span>أ.م.د/ مروة زغلول</span>
+        <span>أ.م.د/ مروة زغلول[cite: 3]</span>
         <span class="gold-divider-3d"></span>
-        <span>م.م/ هبة بهريز</span>
+        <span>م.م/ هبة بهريز[cite: 3]</span>
       </div>
     </div>
 
@@ -576,56 +594,8 @@
 </div>
 
 <script>
-  // بنك الأسئلة الـ 35 الجديد مقسماً على مراحل المسابقة الخمس
-  const COMPETITION_QUESTIONS = [
-    // --- المرحلة الأولى: الأسئلة الكلاسيكية (10 أسئلة) ---
-    { num: 1, stage: 1, roundName: "المرحلة الأولى", q: "Q1. Insulin resistance is best defined as:", opts: ["Complete absence of insulin secretion", "Failure of body cells to respond adequately to insulin", "Increased insulin sensitivity", "Destruction of pancreatic alpha cells"], ans: 1, exp: "الخلايا لا تستجيب للإنسولين بشكل طبيعي، وبالتالي يحتاج الجسم لجرعات أكبر للحصول على نفس التأثير." },
-    { num: 2, stage: 1, roundName: "المرحلة الأولى", q: "Q2. Which of the following drugs may cause insulin resistance?", opts: ["Metformin", "Acarbose", "Corticosteroids", "Sitagliptin"], ans: 2, exp: "Corticosteroids من العوامل التي تسبب insulin resistance." },
-    { num: 3, stage: 1, roundName: "المرحلة الأولى", q: "Q3. Which of the following is NOT a precipitating factor for insulin resistance?", opts: ["Pregnancy", "Severe infection", "Corticosteroids", "Increased insulin receptor sensitivity"], ans: 3, exp: "زيادة حساسية المستقبلات تقلل insulin resistance." },
-    { num: 4, stage: 1, roundName: "المرحلة الأولى", q: "Q4. Which of the following drugs improves insulin receptor sensitivity?", opts: ["Glibenclamide", "Metformin", "Repaglinide", "Chlorpropamide"], ans: 1, exp: "Metformin improves insulin sensitivity." },
-    { num: 5, stage: 1, roundName: "المرحلة الأولى", q: "Q5. Which of the following is a first-generation sulfonylurea?", opts: ["Glimepiride", "Gliclazide", "Tolbutamide", "Glibenclamide"], ans: 2, exp: "First generation: Tolbutamide, Chlorpropamide." },
-    { num: 6, stage: 1, roundName: "المرحلة الأولى", q: "Q6. Which of the following is a third-generation sulfonylurea?", opts: ["Tolbutamide", "Chlorpropamide", "Gliclazide", "Glimepiride"], ans: 3, exp: "Glimepiride is a third-generation sulfonylurea." },
-    { num: 7, stage: 1, roundName: "المرحلة الأولى", q: "Q7. Sulfonylureas increase insulin secretion by:", opts: ["Opening ATP-sensitive potassium channels", "Closing ATP-sensitive potassium channels", "Blocking calcium channels", "Activating glucagon secretion"], ans: 1, exp: "Closure of K+ channels leads to insulin release." },
-    { num: 8, stage: 1, roundName: "المرحلة الأولى", q: "Q8. Closure of potassium channels in pancreatic beta cells results in:", opts: ["Hyperpolarization", "Beta-cell depolarization", "Decreased calcium influx", "Decreased insulin secretion"], ans: 1, exp: "K+ channel closure → Depolarization → Ca²⁺ influx → Insulin release." },
-    { num: 9, stage: 1, roundName: "المرحلة الأولى", q: "Q9. Sulfonylureas increase insulin secretion mainly by:", opts: ["Increasing insulin secreted during each pulse", "Increasing basal insulin secretion only", "Increasing insulin receptor numbers", "Inhibiting hepatic gluconeogenesis"], ans: 0, exp: "Increasing insulin secreted during each pulse." },
-    { num: 10, stage: 1, roundName: "المرحلة الأولى", q: "Q10. Which of the following is a major adverse effect of sulfonylureas?", opts: ["Lactic acidosis", "Hypoglycemia", "Flatulence", "Pancreatitis"], ans: 1, exp: "Hypoglycemia is a major adverse effect of sulfonylureas." },
-
-    // --- المرحلة الثانية: وصلنا للدابل (8 أسئلة بـ ×2 نقاط) ---
-    { num: 11, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q11. Which sulfonylurea is particularly associated with prolonged hypoglycemia?", opts: ["Chlorpropamide", "Tolbutamide", "Gliclazide", "Glimepiride"], ans: 0, exp: "Chlorpropamide طويل المفعول، وبالتالي يزيد خطر prolonged hypoglycemia." },
-    { num: 12, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q12. Sulfonylureas are ineffective in type 1 DM because they:", opts: ["Increase intestinal glucose absorption", "Require functioning pancreatic beta cells", "Block insulin receptors", "Increase glucagon secretion"], ans: 1, exp: "تحتاج وجود pancreatic β-cells قادرة على إفراز الإنسولين." },
-    { num: 13, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q13. Which of the following belongs to the meglitinide group?", opts: ["Metformin", "Repaglinide", "Pioglitazone", "Acarbose"], ans: 1, exp: "Repaglinide belongs to meglitinides." },
-    { num: 14, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q14. Meglitinides should be taken:", opts: ["Immediately after meals", "Just before meals", "At bedtime", "Once weekly"], ans: 1, exp: "Fast onset + Short duration → control of postprandial hyperglycemia." },
-    { num: 15, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q15. Which drug can be used in patients allergic to sulfonylureas because it does not contain sulfur?", opts: ["Repaglinide", "Glibenclamide", "Chlorpropamide", "Glimepiride"], ans: 0, exp: "Repaglinide does not contain sulfur." },
-    { num: 16, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q16. The major adverse effect of meglitinides is:", opts: ["Lactic acidosis", "Hypoglycemia", "Fluid retention", "Hepatotoxicity"], ans: 1, exp: "Hypoglycemia is the major adverse effect." },
-    { num: 17, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q17. Metformin decreases blood glucose mainly by:", opts: ["Increasing insulin secretion", "Decreasing hepatic gluconeogenesis", "Closing potassium channels", "Increasing glucagon secretion"], ans: 1, exp: "Metformin decreases hepatic gluconeogenesis." },
-    { num: 18, stage: 2, roundName: "المرحلة الثانية: وصلنا للدابل (×2)", q: "Q18. Why does metformin rarely cause hypoglycemia when used alone?", opts: ["It increases glucagon secretion", "It does not stimulate insulin secretion", "It blocks glucose absorption completely", "It increases insulin degradation"], ans: 1, exp: "Metformin does not stimulate insulin secretion directly." },
-
-    // --- المرحلة الثالثة: التوصيل واختيار المجموعات (6 أسئلة) ---
-    { num: 19, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q19. Which of the following is the most common adverse effect of metformin?", opts: ["GIT disturbances", "Hypoglycemia", "Peripheral edema", "Pancreatitis"], ans: 0, exp: "GIT disturbances are common with metformin." },
-    { num: 20, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q20. Metformin-associated lactic acidosis is more likely to occur in patients with:", opts: ["Severe renal impairment", "Mild headache", "Hyperthyroidism", "Iron deficiency anemia"], ans: 0, exp: "Renal impairment increases lactic acidosis risk." },
-    { num: 21, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q21. Long-term use of metformin may decrease the absorption of:", opts: ["Vitamin C", "Vitamin B12", "Vitamin D", "Vitamin K"], ans: 1, exp: "Metformin decreases vitamin B12 absorption." },
-    { num: 22, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q22. Metformin may be beneficial in patients with polycystic ovary syndrome (PCOS) because it:", opts: ["Increases androgen levels", "Lowers androgen levels and improves ovulation", "Increases insulin resistance", "Suppresses ovarian function"], ans: 1, exp: "Lowers androgen levels and improves ovulation." },
-    { num: 23, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q23. Thiazolidinediones act mainly through activation of:", opts: ["PPAR-γ", "DPP-4", "ATP-sensitive potassium channels", "Alpha-glucosidase"], ans: 0, exp: "Thiazolidinediones activate PPAR-γ." },
-    { num: 24, stage: 3, roundName: "المرحلة الثالثة: المجموعات والتوصيل", q: "Q24. Which of the following is a thiazolidinedione?", opts: ["Sitagliptin", "Pioglitazone", "Repaglinide", "Acarbose"], ans: 1, exp: "Pioglitazone is a thiazolidinedione." },
-
-    // --- المرحلة الرابعة: السرعة البرقية (6 أسئلة) ---
-    { num: 25, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q25. Thiazolidinediones increase glucose uptake mainly by increasing the number of:", opts: ["GLUT1", "GLUT2", "GLUT3", "GLUT4"], ans: 3, exp: "Increasing GLUT4 transporters." },
-    { num: 26, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q26. Why do thiazolidinediones have a slow onset of action?", opts: ["They are poorly absorbed", "They depend on gene regulation", "They require insulin injection", "They inhibit intestinal enzymes"], ans: 1, exp: "They depend on gene regulation (PPAR-γ)." },
-    { num: 27, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q27. Which thiazolidinedione has a more favorable effect on serum lipids?", opts: ["Rosiglitazone", "Pioglitazone", "Both have identical effects", "Neither affects serum lipids"], ans: 1, exp: "Pioglitazone has a more favorable lipid profile effect." },
-    { num: 28, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q28. Thiazolidinediones should be avoided in patients with:", opts: ["Bronchial asthma", "Congestive heart failure", "Iron deficiency anemia", "Peptic ulcer"], ans: 1, exp: "Due to fluid retention and worsening of CHF." },
-    { num: 29, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q29. Which drug has a greater reported risk of myocardial infarction compared with pioglitazone in the lecture?", opts: ["Rosiglitazone", "Metformin", "Repaglinide", "Acarbose"], ans: 0, exp: "Rosiglitazone has a greater MI risk." },
-    { num: 30, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q30. Acarbose decreases carbohydrate digestion by inhibiting:", opts: ["DPP-4", "Alpha-glucosidase", "PPAR-γ", "SGLT2"], ans: 1, exp: "Inhibits alpha-glucosidase." },
-
-    // --- المرحلة الخامسة: تحت الضغط (5 أسئلة حاسمة) ---
-    { num: 31, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q31. GLP-1 is normally inactivated by which enzyme?", opts: ["Alpha-glucosidase", "DPP-4", "ACE", "Lipase"], ans: 1, exp: "Inactivated by DPP-4." },
-    { num: 32, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q32. Which of the following is a GLP-1 mimetic?", opts: ["Sitagliptin", "Exenatide", "Dapagliflozin", "Pramlintide"], ans: 1, exp: "Exenatide is a GLP-1 mimetic." },
-    { num: 33, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q33. GLP-1 mimetics produce all the following effects EXCEPT:", opts: ["Increased insulin secretion", "Decreased glucagon secretion", "Delayed gastric emptying", "Increased appetite"], ans: 3, exp: "They decrease appetite, not increase it." },
-    { num: 34, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q34. Sitagliptin lowers blood glucose by:", opts: ["Inhibiting DPP-4", "Activating PPAR-γ", "Blocking SGLT2", "Inhibiting alpha-glucosidase"], ans: 0, exp: "Sitagliptin is a DPP-4 inhibitor." },
-    { num: 35, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q35. Pramlintide is a synthetic analog of:", opts: ["GLP-1", "Glucagon", "Amylin", "Insulin"], ans: 2, exp: "Pramlintide is an amylin analog." }
-  ];
-
   let roomId = '';
-  let myRole = ''; // 'host' | 'team1' | 'team2'
+  let myRole = ''; 
   let peer = null;
   let hostConn = null;
   let teamConns = { team1: null, team2: null };
@@ -935,8 +905,7 @@
     document.getElementById('host-waiting-screen').classList.add('hidden');
     document.getElementById('host-game-screen').classList.remove('hidden');
     
-    // إظهار شاشة تعريفية بالمرحلة الأولى قبل أول سؤال
-    showRoundIntro(1, "المرحلة الأولى", "أسئلة تخصصية سريعة بنظام الجرس");
+    showRoundIntro(1, COMPETITION_QUESTIONS[0].roundName, "أسئلة تخصصية سريعة بنظام الجرس");
   }
 
   function showRoundIntro(stageNum, title, desc) {
@@ -959,7 +928,16 @@
     if (!roomState.team1Connected || !roomState.team2Connected) return;
     roomState.gameStarted = true;
 
-    // فحص الانتقال للمرحلة الثانية عند السؤال 10
+    // فحص الانتقال التلقائي للفقرات بحسب الأسئلة الجديدة
+    if (roomState.qIndex >= 0 && roomState.qIndex < COMPETITION_QUESTIONS.length - 1) {
+      const nextQObj = COMPETITION_QUESTIONS[roomState.qIndex + 1];
+      const currentQObj = COMPETITION_QUESTIONS[roomState.qIndex];
+      if (nextQObj.roundName !== currentQObj.roundName) {
+        showRoundIntro(nextQObj.stage, nextQObj.roundName, nextQObj.stage === 2 ? "الأسئلة القادمة مضاعفة النقاط (×2)" : "مرحلة جديدة من التحدي");
+        return;
+      }
+    }
+
     if (roomState.qIndex === 9 && roomState.stage === 1 && !roomState.showTransition) {
       clearInterval(timerInterval);
       roomState.showTransition = true;
@@ -978,12 +956,6 @@
 
     roomState.qIndex++;
     const qObj = COMPETITION_QUESTIONS[roomState.qIndex];
-    
-    // التحقق من الانتقال التلقائي للعرص البصري للمراحل الجديدة
-    if (qObj.stage !== roomState.stage && qObj.stage === 2) {
-      // تم التعامل مع المرحلة الثانية عبر modal الانتقال
-    }
-
     roomState.stage = qObj.stage;
     roomState.showTransition = false;
     roomState.currentQ = qObj;
@@ -1011,8 +983,6 @@
     roomState.stage = 2;
     roomState.showTransition = false;
     roomState.qIndex = 10;
-    
-    // إظهار نافذة تعريفية بالمرحلة الثانية
     showRoundIntro(2, "المرحلة الثانية: وصلنا للدابل", "الأسئلة القادمة مضاعفة النقاط (×2)");
   }
 
@@ -1273,8 +1243,10 @@
       document.getElementById('question-progress-bar').style.width = `${Math.max(5, (currentNum / 35) * 100)}%`;
 
       const nextBtnLabel = document.getElementById('next-q-btn-label');
-      if (currentNum >= 35) {
-        nextBtnLabel.innerText = 'اكتملت جميع الأسئلة (35/35)';
+      if (currentNum === 10 && roomState.stage === 1) {
+        nextBtnLabel.innerText = 'الانتقال للمرحلة الثانية (الضعف)';
+      } else if (currentNum >= 35) {
+        nextBtnLabel.innerText = 'اكتملت الأسئلة (35/35)';
       } else {
         nextBtnLabel.innerText = `السؤال التالي (${currentNum + 1}/35)`;
       }
@@ -1288,7 +1260,7 @@
         banner.innerText = `⚡ الأسرع في الجرس: ${name}`;
       } else if (roomState.statusMessage) {
         banner.classList.remove('hidden');
-        banner.className = 'mb-3 py-3 px-8 rounded-2xl text-center font-black text-xl sm:text-2xl shadow-2xl bg-amber-600 text-white';
+        banner.className = `mb-3 py-3 px-8 rounded-2xl text-center font-black text-xl sm:text-2xl shadow-2xl bg-amber-600 text-white`;
         banner.innerText = roomState.statusMessage;
       } else {
         banner.classList.add('hidden');
@@ -1573,7 +1545,7 @@
     setTimeout(() => checkRoomAvailability(roomId), 300);
   }
 
-  // ================= خلفية الـ DNA ثلاثية الأبعاد والحلقات المدارية الدائمة =================
+  // ================= خلفية الـ DNA ثلاثية الأبعاد الحلقية الصافية =================
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x02050e);
   scene.fog = new THREE.FogExp2(0x02050e, 0.028);
