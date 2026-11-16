@@ -21,10 +21,10 @@
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     background-color: #02050e !important;
     color: #f8fafc;
+    perspective: 1500px;
   }
   #canvas-container {
     position: fixed;
@@ -32,7 +32,7 @@
     z-index: 0;
     pointer-events: none;
   }
-  .ui-layer { position: relative; z-index: 10; min-height: 100vh; width: 100vw; display: flex; flex-direction: column; }
+  .ui-layer { position: relative; z-index: 10; height: 100vh; width: 100vw; display: flex; flex-direction: column; }
 
   @keyframes goldShine {
     0% { background-position: 0% 50%; }
@@ -45,6 +45,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: goldShine 4s linear infinite;
+    filter: drop-shadow(0 3px 10px rgba(245, 158, 11, 0.3));
   }
   .gold-shimmer-bar {
     background: linear-gradient(90deg, #fde047 0%, #f59e0b 50%, #fde047 100%);
@@ -55,348 +56,932 @@
   .dark-gold-btn {
     background: linear-gradient(160deg, #0d1832 0%, #050a18 100%);
     border: 1.5px solid rgba(245, 158, 11, 0.65);
-    box-shadow: 0 6px 0 #02050d, 0 12px 28px rgba(0, 0, 0, 0.85);
-    transition: all 0.15s ease;
+    box-shadow:
+      0 6px 0 #02050d,
+      0 12px 28px rgba(0, 0, 0, 0.85),
+      0 0 20px rgba(245, 158, 11, 0.15),
+      inset 0 1px 1px rgba(254, 240, 138, 0.25);
+    transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .dark-gold-btn:hover:not(:disabled) {
     transform: translateY(-2px);
     border-color: #fde047;
+    background: linear-gradient(160deg, #132347 0%, #070e22 100%);
+    box-shadow:
+      0 8px 0 #02050d,
+      0 16px 35px rgba(0, 0, 0, 0.9),
+      0 0 28px rgba(245, 158, 11, 0.3),
+      inset 0 1px 2px rgba(254, 240, 138, 0.4);
+  }
+  .dark-gold-btn:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #02050d, 0 5px 12px rgba(0, 0, 0, 0.8);
   }
 
   .gold-divider-3d {
     display: inline-block;
-    width: 2px; height: 16px; border-radius: 99px;
+    width: 2px;
+    height: 18px;
+    border-radius: 99px;
     background: linear-gradient(180deg, #fef08a 0%, #f59e0b 50%, #92400e 100%);
-    margin: 0 10px; vertical-align: middle;
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.75);
+    margin: 0 12px;
+    vertical-align: middle;
   }
 
   .royal-dark-card {
-    background: linear-gradient(165deg, rgba(10, 19, 42, 0.94) 0%, rgba(3, 7, 18, 0.98) 100%);
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+    background: linear-gradient(165deg, rgba(10, 19, 42, 0.84) 0%, rgba(3, 7, 18, 0.92) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.32);
+    backdrop-filter: blur(18px);
+    box-shadow:
+      0 24px 60px -10px rgba(0, 0, 0, 0.92),
+      0 4px 0 rgba(15, 23, 42, 0.9),
+      inset 0 1px 1px rgba(254, 240, 138, 0.16);
+    transform-style: preserve-3d;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .royal-crown-card {
+    background: linear-gradient(165deg, rgba(11, 21, 46, 0.86) 0%, rgba(3, 6, 16, 0.94) 100%);
+    border: 1.5px solid rgba(245, 158, 11, 0.55);
+    backdrop-filter: blur(18px);
+    box-shadow:
+      0 30px 75px rgba(0, 0, 0, 0.95),
+      0 5px 0 rgba(120, 53, 15, 0.45),
+      0 0 40px rgba(245, 158, 11, 0.14),
+      inset 0 1px 1px rgba(254, 240, 138, 0.22);
+  }
+
+  .logo-3d-ring {
+    width: 76px; height: 76px;
+    border-radius: 9999px;
+    padding: 2px;
+    background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #92400e 100%);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.85), 0 0 18px rgba(245, 158, 11, 0.3);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  .logo-3d-ring:hover { transform: translateY(-3px) scale(1.04); }
+  .logo-3d-ring img {
+    width: 100%; height: 100%; border-radius: 9999px; object-fit: cover; background: #050b1a; clip-path: circle(46.5% at 50% 50%); transform: scale(1.08);
   }
 
   .logo-3d-ring-sm {
-    width: 52px; height: 52px; border-radius: 9999px; padding: 2px;
+    width: 48px; height: 48px; border-radius: 9999px; padding: 1.5px;
     background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #92400e 100%);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.8), 0 0 12px rgba(245, 158, 11, 0.25);
     display: inline-flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
   }
-  .logo-3d-ring-sm img { width: 100%; height: 100%; border-radius: 9999px; object-fit: cover; background: #050b1a; }
+  .logo-3d-ring-sm img {
+    width: 100%; height: 100%; border-radius: 9999px; object-fit: cover; background: #050b1a; clip-path: circle(46.5% at 50% 50%); transform: scale(1.08);
+  }
+
+  .team-orb-3d {
+    position: relative; width: 68px; height: 68px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .team-orb-ring {
+    position: absolute; inset: -5px; border-radius: 9999px; border: 1.5px dashed rgba(253, 224, 71, 0.7); animation: spinSlow 10s linear infinite; pointer-events: none;
+  }
+  .team-orb-ring-reverse {
+    position: absolute; inset: -1px; border-radius: 9999px; border: 1px solid rgba(245, 158, 11, 0.35); border-top-color: #fde047; animation: spinReverse 6s linear infinite; pointer-events: none;
+  }
+  .team-orb-chassis {
+    position: relative; width: 58px; height: 58px; border-radius: 9999px; padding: 2px;
+    background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #78350f 100%);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.9), 0 4px 0 #3b1704, inset 0 2px 3px rgba(255, 255, 255, 0.7);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .team-orb-core-rose {
+    width: 100%; height: 100%; border-radius: 9999px; background: radial-gradient(circle at 32% 28%, #fb7185 0%, #e11d48 45%, #4c0519 95%);
+    box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.65), 0 0 22px rgba(244, 63, 94, 0.45);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .team-orb-core-blue {
+    width: 100%; height: 100%; border-radius: 9999px; background: radial-gradient(circle at 32% 28%, #60a5fa 0%, #2563eb 45%, #172554 95%);
+    box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.65), 0 0 22px rgba(59, 130, 246, 0.45);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .finale-3d-rig {
+    position: relative; width: 155px; height: 155px; margin: 0 auto 14px auto; display: flex; align-items: center; justify-content: center;
+  }
+  .finale-orbit-outer {
+    position: absolute; inset: -12px; border-radius: 9999px; border: 2.5px dashed rgba(253, 224, 71, 0.8); animation: spinSlow 11s linear infinite; filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.55)); pointer-events: none;
+  }
+  .finale-orbit-inner {
+    position: absolute; inset: -3px; border-radius: 9999px; border: 2px solid rgba(56, 189, 248, 0.35); border-top-color: #fde047; border-bottom-color: #f59e0b; animation: spinReverse 7s linear infinite; pointer-events: none;
+  }
+  .finale-glow-aura {
+    position: absolute; inset: 6px; border-radius: 9999px; background: radial-gradient(circle, rgba(245, 158, 11, 0.65), rgba(56, 189, 248, 0.25)); filter: blur(22px); pointer-events: none;
+  }
+  .finale-dome-chassis {
+    position: relative; width: 132px; height: 132px; border-radius: 9999px; background: linear-gradient(145deg, #1e293b, #060b16); padding: 10px; border: 2px solid rgba(253, 224, 71, 0.75);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95), 0 6px 0 #02050b, inset 0 2px 5px rgba(254, 240, 138, 0.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .finale-dome-core {
+    width: 100%; height: 100%; border-radius: 9999px; background: radial-gradient(circle at 50% 28%, #1e3a8a 0%, #09132c 65%, #02050e 100%);
+    box-shadow: inset 0 -6px 14px rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
 
   .opt-royal-btn {
     background: linear-gradient(180deg, rgba(15, 27, 56, 0.94) 0%, rgba(6, 11, 26, 0.98) 100%);
     border: 1px solid rgba(245, 158, 11, 0.35);
-    box-shadow: 0 6px 0 #030712, 0 12px 24px rgba(0, 0, 0, 0.8);
-    transition: all 0.15s ease;
+    box-shadow: 0 6px 0 #030712, 0 12px 24px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(254, 240, 138, 0.14);
+    transition: all 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .opt-royal-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    border-color: #fde047;
+    transform: translateY(-3px); border-color: rgba(253, 224, 71, 0.8); background: linear-gradient(180deg, rgba(22, 39, 78, 0.96) 0%, rgba(9, 17, 38, 0.99) 100%);
+    box-shadow: 0 9px 0 #451a03, 0 18px 32px rgba(245, 158, 11, 0.22);
+  }
+  .opt-royal-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #030712, 0 5px 10px rgba(0, 0, 0, 0.7); }
+
+  .btn-3d {
+    transition: all 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.65), 0 8px 18px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  }
+  .btn-3d:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); }
+  .btn-3d:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.65), 0 4px 8px rgba(0, 0, 0, 0.4); }
+
+  .qr-white-card {
+    background: #ffffff; padding: 14px; border-radius: 22px; border: 2px solid rgba(245, 158, 11, 0.7);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(245, 158, 11, 0.22); display: inline-block;
+  }
+  .glass-3d-backdrop {
+    background: radial-gradient(circle at 50% 50%, rgba(6, 13, 30, 0.45) 0%, rgba(2, 5, 14, 0.72) 100%) !important; backdrop-filter: blur(5px);
   }
 
-  .btn-3d { transition: all 0.12s ease; box-shadow: 0 5px 0 rgba(0, 0, 0, 0.65), 0 8px 18px rgba(0, 0, 0, 0.45); }
-  .btn-3d:active:not(:disabled) { transform: translateY(3px); }
+  @keyframes timerUrgentPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  .timer-urgent {
+    border-color: #f43f5e !important; color: #fda4af !important; box-shadow: 0 0 28px rgba(244, 63, 94, 0.6) !important; animation: timerUrgentPulse 0.5s ease-in-out infinite;
+  }
 
-  .qr-white-card { background: #ffffff; padding: 12px; border-radius: 20px; border: 2px solid #f59e0b; display: inline-block; }
-  .glass-3d-backdrop { background: rgba(2, 5, 14, 0.88) !important; backdrop-filter: blur(10px); }
+  .buzzer-rig { position: relative; width: 270px; height: 270px; display: flex; align-items: center; justify-content: center; }
+  .buzzer-orbit-ring {
+    position: absolute; inset: -12px; border-radius: 9999px; border: 2px dashed rgba(253, 224, 71, 0.75); animation: spinSlow 12s linear infinite; pointer-events: none;
+  }
+  .buzzer-glow-aura { position: absolute; inset: 6px; border-radius: 9999px; filter: blur(26px); opacity: 0.65; transition: all 0.3s ease; pointer-events: none; }
+  .buzzer-chassis {
+    position: relative; width: 244px; height: 244px; border-radius: 9999px; background: linear-gradient(145deg, #1e293b, #070c18); padding: 18px;
+    box-shadow: 0 26px 50px rgba(0, 0, 0, 0.95), 0 8px 0 #02050b, inset 0 2px 4px rgba(254, 240, 138, 0.3), inset 0 -8px 16px rgba(0, 0, 0, 0.9);
+    border: 1.5px solid rgba(245, 158, 11, 0.65); display: flex; align-items: center; justify-content: center;
+  }
+  .buzzer-dome {
+    position: relative; width: 100%; height: 100%; border-radius: 9999px; border: none; outline: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; transform: translateY(-12px);
+    transition: all 0.1s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden;
+  }
+  .buzzer-dome::before {
+    content: ''; position: absolute; top: 5%; left: 14%; right: 14%; height: 38%; border-radius: 9999px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.02) 100%); pointer-events: none;
+  }
+  .buzzer-dome-team1 {
+    background: radial-gradient(circle at 50% 28%, #ff4d79 0%, #e11d48 55%, #881337 100%);
+    box-shadow: 0 15px 0 #4c0519, 0 22px 35px rgba(0, 0, 0, 0.9), 0 0 38px rgba(244, 63, 94, 0.5), inset 0 -8px 18px rgba(0, 0, 0, 0.5);
+  }
+  .buzzer-dome-team2 {
+    background: radial-gradient(circle at 50% 28%, #60a5fa 0%, #2563eb 55%, #1e3a8a 100%);
+    box-shadow: 0 15px 0 #172554, 0 22px 35px rgba(0, 0, 0, 0.9), 0 0 38px rgba(59, 130, 246, 0.5), inset 0 -8px 18px rgba(0, 0, 0, 0.5);
+  }
+  .buzzer-dome:active:not(:disabled) {
+    transform: translateY(2px); box-shadow: 0 2px 0 #1e293b, 0 6px 15px rgba(0, 0, 0, 0.85), 0 0 60px rgba(250, 204, 21, 0.9), inset 0 8px 22px rgba(0, 0, 0, 0.65);
+  }
+  .buzzer-dome:disabled {
+    background: radial-gradient(circle at 50% 30%, #334155 0%, #1e293b 70%, #090d16 100%);
+    box-shadow: 0 7px 0 #04070e, 0 12px 20px rgba(0, 0, 0, 0.7), inset 0 -4px 10px rgba(0, 0, 0, 0.6);
+    transform: translateY(-3px); cursor: not-allowed; opacity: 0.48;
+  }
 
-  @keyframes timerUrgentPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-  .timer-urgent { border-color: #f43f5e !important; color: #fda4af !important; animation: timerUrgentPulse 0.5s ease-in-out infinite; }
-
-  .buzzer-rig { position: relative; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; }
-  .buzzer-chassis { width: 230px; height: 230px; border-radius: 9999px; background: linear-gradient(145deg, #1e293b, #070c18); padding: 15px; border: 2px solid #f59e0b; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(0,0,0,0.9); }
-  .buzzer-dome { width: 100%; height: 100%; border-radius: 9999px; border: none; outline: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .buzzer-dome-team1 { background: radial-gradient(circle at 50% 30%, #ff4d79 0%, #e11d48 60%, #881337 100%); box-shadow: 0 12px 0 #4c0519; }
-  .buzzer-dome-team2 { background: radial-gradient(circle at 50% 30%, #60a5fa 0%, #2563eb 60%, #1e3a8a 100%); box-shadow: 0 12px 0 #172554; }
-  .buzzer-dome:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 0 #1e293b; }
+  @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+  @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+  @keyframes pulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.65); }
+    70% { box-shadow: 0 0 0 24px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  }
+  .winner-glow { animation: pulseRing 1.6s infinite; }
+  @keyframes floatCap {
+    0%, 100% { transform: translateY(0px) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+  }
+  .grad-cap-anim { animation: floatCap 2.6s ease-in-out infinite; display: inline-block; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .animate-slide-up { animation: slideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 </style>
 </head>
 <body>
 
 <div id="canvas-container"></div>
 
+<svg width="0" height="0" class="absolute">
+  <defs>
+    <linearGradient id="gold3d" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3" />
+      <stop offset="35%" stop-color="#fde047" />
+      <stop offset="70%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#fef08a" />
+    </linearGradient>
+  </defs>
+</svg>
+
 <!-- ================= 1. شاشة البداية ================= -->
 <div id="lobby-screen" class="ui-layer items-center justify-center p-4 overflow-y-auto">
-  <div class="royal-dark-card max-w-2xl w-full rounded-3xl p-6 sm:p-10 text-center my-auto">
-    <!-- شعارات الكلية والجامعة -->
-    <div class="flex items-center justify-center gap-3 mb-4">
-      <div class="logo-3d-ring-sm" title="جامعة المنصورة الأهلية"><img src="https://i.ibb.co/1n504H3/mans-logo.png" alt="جامعة المنصورة الأهلية" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'"></div>
-      <div class="logo-3d-ring-sm" title="كلية الصيدلة"><img src="https://i.ibb.co/v4b2f15/pharmacy-logo.png" alt="كلية الصيدلة" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2965/2965567.png'"></div>
-      <div class="logo-3d-ring-sm" title="قسم الأدوية والسموم"><img src="https://i.ibb.co/68X3p9q/tox-logo.png" alt="قسم الأدوية" onerror="this.src='https://cdn-icons-png.flaticon.com/512/822/822143.png'"></div>
+  <div class="royal-dark-card royal-crown-card max-w-3xl w-full rounded-3xl p-7 sm:p-11 text-center my-auto animate-slide-up">
+    
+    <div class="flex items-center justify-center gap-6 sm:gap-8 mb-5">
+      <div class="logo-3d-ring">
+        <img src="mnu-logo.jpg" alt="جامعة المنصورة الأهلية" onerror="this.parentElement.style.display='none'">
+      </div>
+      <div class="logo-3d-ring">
+        <img src="pharmacy-logo.jpg" alt="كلية الصيدلة" onerror="this.parentElement.style.display='none'">
+      </div>
+      <div class="logo-3d-ring">
+        <img src="pharma-dept-logo.jpg" alt="قسم الأدوية والسموم" onerror="this.parentElement.style.display='none'">
+      </div>
     </div>
 
-    <h1 class="text-4xl sm:text-6xl font-black gold-shimmer-text mb-2">مسابقة العباقرة</h1>
-    <div class="text-xs sm:text-sm font-bold text-amber-300 mb-4">جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم</div>
-    
-    <div class="bg-slate-950/80 border border-amber-400/30 rounded-2xl py-3 px-5 mb-6 inline-block">
-      <div class="text-xs font-bold text-amber-300 mb-1">تحت إشراف</div>
-      <div class="text-xs sm:text-sm font-black text-white flex flex-wrap items-center justify-center">
-        <span>أ.د/ مريهان مقلد</span><span class="gold-divider-3d"></span>
-        <span>أ.م.د/ مروة زغلول</span><span class="gold-divider-3d"></span>
+    <div class="text-sm sm:text-base font-extrabold text-amber-300/95 tracking-wide mb-2">
+      جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم
+    </div>
+
+    <h1 class="text-5xl sm:text-7xl font-black tracking-tight gold-shimmer-text mb-6">
+      مسابقة العباقرة
+    </h1>
+
+    <div class="bg-slate-950/90 border border-amber-400/35 rounded-2xl py-3.5 px-7 mb-8 inline-block max-w-full shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+      <div class="text-xs font-extrabold gold-shimmer-text tracking-wider mb-1.5">تحت إشراف</div>
+      <div class="text-sm sm:text-base font-black text-white flex flex-wrap items-center justify-center">
+        <span>أ.م/ مريهان مقلد</span>
+        <span class="gold-divider-3d"></span>
+        <span>أ.م.د/ مروة زغلول</span>
+        <span class="gold-divider-3d"></span>
         <span>م.م/ هبة بهريز</span>
       </div>
     </div>
 
     <div id="host-role-card" class="max-w-xs mx-auto">
-      <button id="create-host-btn" onclick="createHostRoom()" class="dark-gold-btn w-full py-3.5 rounded-2xl font-black text-xl cursor-pointer">
+      <button id="create-host-btn" onclick="createHostRoom()" class="dark-gold-btn en-font w-full py-4 rounded-2xl font-black text-2xl tracking-wider cursor-pointer flex items-center justify-center gap-3">
+        <svg class="w-7 h-7" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
         <span class="gold-shimmer-text">Host</span>
       </button>
     </div>
 
     <div id="team-role-card" class="hidden max-w-md mx-auto mt-2">
-      <div class="mb-3">
-        <label class="block text-xs font-bold text-amber-300 mb-1.5">اسم الفريق</label>
-        <input id="custom-team-name-input" type="text" maxlength="22" placeholder="اكتب اسم فريقك..." class="w-full text-center text-lg font-black bg-slate-950 border border-amber-400/50 rounded-xl py-3 px-3 text-white">
+      <div class="mb-4">
+        <label class="block text-sm font-extrabold gold-shimmer-text mb-2">اسم الفريق</label>
+        <input id="custom-team-name-input" type="text" maxlength="22" placeholder="اكتب اسم فريقك هنا..." class="w-full text-center text-xl font-black bg-slate-950/95 border border-amber-400/50 rounded-2xl py-4 px-4 text-white focus:outline-none focus:border-amber-300 shadow-inner">
       </div>
-      <button id="join-auto-team-btn" onclick="joinCompetitionAuto()" class="dark-gold-btn w-full py-3.5 rounded-2xl font-black text-base cursor-pointer">
+      <button id="join-auto-team-btn" onclick="joinCompetitionAuto()" class="dark-gold-btn w-full py-4 rounded-2xl font-black text-lg cursor-pointer flex items-center justify-center gap-2.5">
+        <svg class="w-6 h-6" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
         <span class="gold-shimmer-text">انضمام للمسابقة</span>
       </button>
     </div>
-    <div id="connection-status" class="mt-3 text-xs text-emerald-400 font-bold"></div>
+
+    <div id="connection-status" class="mt-4 text-xs text-emerald-400 font-bold"></div>
   </div>
 </div>
 
-<!-- ================= 2. شاشة الانتظار للهوست ================= -->
+<!-- ================= 2. صفحة انتظار الفريقين ================= -->
 <div id="host-waiting-screen" class="ui-layer hidden items-center justify-center p-4 overflow-y-auto">
-  <div class="royal-dark-card max-w-4xl w-full rounded-3xl p-6 text-center my-auto">
-    <h2 id="waiting-headline" class="text-3xl font-black gold-shimmer-text mb-2">فين الفريقين؟</h2>
-    <p id="waiting-subheadline" class="text-sm font-bold text-slate-300 mb-5">امسح رمز الـ QR بالموبايل لتسجيل الفريقين (0 / 2)</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-center mb-5">
-      <div id="wait-card-team1" class="royal-dark-card rounded-2xl p-4 text-center border border-rose-500/30">
-        <div class="text-xs font-bold text-rose-400 mb-1">الفريق الأول</div>
-        <div id="wait-status-team1" class="text-base font-black text-slate-400">في الانتظار</div>
+  <div class="royal-dark-card royal-crown-card max-w-5xl w-full rounded-3xl p-7 sm:p-10 text-center my-auto animate-slide-up">
+    
+    <div class="flex items-center justify-center gap-4 sm:gap-6 mb-4">
+      <div class="logo-3d-ring-sm"><img src="mnu-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div class="text-center px-2">
+        <div class="text-xs sm:text-sm font-extrabold text-amber-300/90">كلية الصيدلة • قسم الأدوية والسموم</div>
+        <div class="text-2xl sm:text-3xl font-black gold-shimmer-text">مسابقة العباقرة</div>
       </div>
-      <div class="flex justify-center"><div class="qr-white-card"><div id="main-qrcode-container"></div></div></div>
-      <div id="wait-card-team2" class="royal-dark-card rounded-2xl p-4 text-center border border-blue-500/30">
-        <div class="text-xs font-bold text-blue-400 mb-1">الفريق الثاني</div>
-        <div id="wait-status-team2" class="text-base font-black text-slate-400">في الانتظار</div>
+      <div class="logo-3d-ring-sm"><img src="pharmacy-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div class="logo-3d-ring-sm"><img src="pharma-dept-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+    </div>
+
+    <div class="my-3 py-3.5 px-10 rounded-2xl bg-slate-950/90 border border-amber-400/35 inline-block shadow-xl">
+      <h2 id="waiting-headline" class="text-3xl sm:text-5xl font-black gold-shimmer-text mb-1">
+        فين الفريقين؟
+      </h2>
+      <p id="waiting-subheadline" class="text-sm sm:text-lg font-bold text-slate-300">
+        امسح رمز الـ QR بالموبايل لتسجيل اسم الفريق (0 / 2)
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-7 items-center my-5">
+      <div id="wait-card-team1" class="royal-dark-card rounded-3xl p-6 text-center min-h-[195px] flex flex-col items-center justify-center border border-rose-500/30">
+        <div class="team-orb-3d mb-3.5">
+          <div class="team-orb-ring"></div>
+          <div class="team-orb-ring-reverse"></div>
+          <div class="team-orb-chassis">
+            <div class="team-orb-core-rose">
+              <svg class="w-8 h-8 drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)]" viewBox="0 0 24 24">
+                <path fill="url(#gold3d)" d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="text-xs font-extrabold text-rose-400 mb-1">الفريق الأول</div>
+        <div id="wait-status-team1" class="text-xl font-black text-slate-500">في الانتظار</div>
+      </div>
+
+      <div class="flex flex-col items-center justify-center">
+        <div class="qr-white-card">
+          <div id="main-qrcode-container"></div>
+        </div>
+      </div>
+
+      <div id="wait-card-team2" class="royal-dark-card rounded-3xl p-6 text-center min-h-[195px] flex flex-col items-center justify-center border border-blue-500/30">
+        <div class="team-orb-3d mb-3.5">
+          <div class="team-orb-ring"></div>
+          <div class="team-orb-ring-reverse"></div>
+          <div class="team-orb-chassis">
+            <div class="team-orb-core-blue">
+              <svg class="w-8 h-8 drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)]" viewBox="0 0 24 24">
+                <path fill="url(#gold3d)" d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="text-xs font-extrabold text-blue-400 mb-1">الفريق الثاني</div>
+        <div id="wait-status-team2" class="text-xl font-black text-slate-500">في الانتظار</div>
       </div>
     </div>
 
-    <button id="start-game-locked-btn" onclick="startMatchFromWaiting()" disabled class="btn-3d px-10 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 font-black text-base cursor-not-allowed">
-      في انتظار اكتمال الفريقين (0 / 2)
+    <div class="mt-5 flex items-center justify-center">
+      <button id="start-game-locked-btn" onclick="startMatchFromWaiting()" disabled class="btn-3d px-14 py-4 rounded-2xl bg-slate-900 border border-slate-800 text-slate-500 font-black text-lg sm:text-xl transition-all cursor-not-allowed">
+        في انتظار اكتمال الفريقين (0 / 2)
+      </button>
+    </div>
+
+    <div class="mt-6 text-xs sm:text-sm font-black text-slate-300 flex flex-wrap items-center justify-center">
+      <span class="gold-shimmer-text ml-2">تحت إشراف:</span>
+      <span>أ.م/ مريهان مقلد</span>
+      <span class="gold-divider-3d"></span>
+      <span>أ.م.د/ مروة زغلول</span>
+      <span class="gold-divider-3d"></span>
+      <span>م.م/ هبة بهريز</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 3. شاشة استوديو اللعب الرئيسية ================= -->
+<div id="host-game-screen" class="ui-layer hidden p-3 sm:p-5 justify-between">
+  <div class="max-w-7xl w-full mx-auto grid grid-cols-12 gap-4 items-center">
+    <div id="host-team1-box" class="col-span-4 royal-dark-card rounded-2xl p-3.5 sm:p-4 border-r-2 border-r-rose-500 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="team-orb-3d hidden sm:flex">
+          <div class="team-orb-ring"></div>
+          <div class="team-orb-ring-reverse"></div>
+          <div class="team-orb-chassis">
+            <div class="team-orb-core-rose">
+              <svg class="w-8 h-8 drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)]" viewBox="0 0 24 24">
+                <path fill="url(#gold3d)" d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div>
+          <input id="team1-name-input" value="الفريق الأول" onchange="syncTeamNames()" class="bg-transparent font-black text-xl sm:text-3xl text-rose-400 w-36 sm:w-52 focus:outline-none border-b border-transparent focus:border-rose-400">
+          <div class="flex items-center gap-2 mt-1">
+            <button onclick="adjustScore('team1', -10)" class="px-2.5 py-0.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-bold text-slate-300 cursor-pointer">-10</button>
+            <button onclick="adjustScore('team1', 10)" class="px-2.5 py-0.5 bg-slate-900 hover:bg-slate-800 border border-amber-500/40 rounded-lg text-xs font-bold text-amber-300 cursor-pointer">+10</button>
+          </div>
+        </div>
+      </div>
+      <div id="host-team1-score" class="text-5xl sm:text-7xl font-black gold-shimmer-text">0</div>
+    </div>
+
+    <div class="col-span-4 royal-dark-card rounded-2xl p-2.5 sm:p-3 text-center border-t border-t-amber-400/60">
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <div class="logo-3d-ring-sm"><img src="mnu-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+        <div class="text-center px-1">
+          <div class="text-base sm:text-xl font-black gold-shimmer-text">مسابقة العباقرة</div>
+          <button onclick="toggleQrModal(true)" class="mt-0.5 px-3 py-0.5 rounded-full bg-slate-950 border border-amber-400/40 text-amber-300 text-[11px] font-bold hover:bg-amber-500/20 cursor-pointer inline-flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-12v8h8V3h-8zm6 6h-4V5h4v4zm-6 4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4 0h2v2h-2v-2zm2 2h2v2h-2v-2zm0-4h2v2h-2v-2zm-4 4h2v2h-2v-2z"/></svg>
+            <span>QR Code</span>
+          </button>
+        </div>
+        <div class="logo-3d-ring-sm"><img src="pharmacy-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+        <div class="logo-3d-ring-sm"><img src="pharma-dept-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      </div>
+      <div id="stage-indicator-pill" class="w-full bg-slate-950/90 border border-amber-400/35 rounded-xl py-1 px-3 text-xs sm:text-sm font-black text-amber-300">
+        المرحلة الأولى (10 أسئلة • 10 نقاط)
+      </div>
+    </div>
+
+    <div id="host-team2-box" class="col-span-4 royal-dark-card rounded-2xl p-3.5 sm:p-4 border-l-2 border-l-blue-500 flex items-center justify-between">
+      <div id="host-team2-score" class="text-5xl sm:text-7xl font-black gold-shimmer-text">0</div>
+      <div class="flex items-center gap-4 text-left">
+        <div>
+          <input id="team2-name-input" value="الفريق الثاني" onchange="syncTeamNames()" class="bg-transparent text-left font-black text-xl sm:text-3xl text-blue-400 w-36 sm:w-52 focus:outline-none border-b border-transparent focus:border-blue-400">
+          <div class="flex items-center justify-end gap-2 mt-1">
+            <button onclick="adjustScore('team2', 10)" class="px-2.5 py-0.5 bg-slate-900 hover:bg-slate-800 border border-amber-500/40 rounded-lg text-xs font-bold text-amber-300 cursor-pointer">+10</button>
+            <button onclick="adjustScore('team2', -10)" class="px-2.5 py-0.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-bold text-slate-300 cursor-pointer">-10</button>
+          </div>
+        </div>
+        <div class="team-orb-3d hidden sm:flex">
+          <div class="team-orb-ring"></div>
+          <div class="team-orb-ring-reverse"></div>
+          <div class="team-orb-chassis">
+            <div class="team-orb-core-blue">
+              <svg class="w-8 h-8 drop-shadow-[0_3px_6px_rgba(0,0,0,0.85)]" viewBox="0 0 24 24">
+                <path fill="url(#gold3d)" d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-auto max-w-7xl w-full mx-auto">
+    <div id="buzz-banner" class="hidden mb-3 py-3 px-8 rounded-2xl text-center font-black text-2xl sm:text-3xl shadow-2xl transition-all"></div>
+
+    <div class="royal-dark-card royal-crown-card rounded-3xl p-6 sm:p-10 relative">
+      <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden mb-5 border border-amber-500/25">
+        <div id="question-progress-bar" class="h-full gold-shimmer-bar transition-all duration-500" style="width: 5%"></div>
+      </div>
+
+      <div class="flex items-center justify-between mb-4">
+        <div class="inline-flex items-center gap-2.5 px-5 py-1.5 rounded-full bg-slate-950 border border-amber-400/45 text-amber-300 text-sm sm:text-base font-black shadow-lg">
+          <svg class="w-5 h-5" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          <span id="q-badge">سؤال 1 من 20</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div id="host-timer-pill" class="flex items-center gap-2 px-5 py-1.5 rounded-full bg-slate-950 border border-amber-400/75 text-amber-300 font-black text-2xl shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all">
+            <svg class="w-6 h-6" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+            <span id="host-timer">20</span>
+          </div>
+          <button onclick="toggleMute()" id="mute-btn" class="btn-3d p-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-amber-400/35 text-amber-200 text-xs sm:text-sm font-bold cursor-pointer">الصوت: مفعل</button>
+        </div>
+      </div>
+
+      <h2 id="host-question-text" class="en-font text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-snug text-center my-5 min-h-[90px] flex items-center justify-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]"></h2>
+
+      <div id="host-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mt-6"></div>
+
+      <div id="explanation-box" class="hidden mt-5 p-4 rounded-2xl bg-emerald-950/90 border border-emerald-400/50 text-emerald-100 text-base sm:text-xl font-bold text-right animate-slide-up shadow-xl"></div>
+    </div>
+  </div>
+
+  <!-- شريط التحكم السفلي (بمسافات أوسع بين الأزرار) -->
+  <div class="max-w-7xl w-full mx-auto royal-dark-card rounded-2xl p-3.5 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center gap-5 sm:gap-7">
+      <button id="next-q-btn" onclick="nextQuestion()" class="dark-gold-btn px-7 py-3.5 rounded-xl font-black text-sm sm:text-base cursor-pointer inline-flex items-center gap-2">
+        <svg class="w-4 h-4" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <span id="next-q-btn-label" class="gold-shimmer-text">السؤال التالي (1/20)</span>
+      </button>
+      <button onclick="unlockBuzzers()" class="btn-3d px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-amber-400/50 text-amber-300 font-black text-sm sm:text-base cursor-pointer inline-flex items-center gap-2">
+        <svg class="w-5 h-5" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <span>فتح الجرس</span>
+      </button>
+      <button onclick="revealAnswer()" class="btn-3d px-6 py-3.5 rounded-xl bg-sky-900/90 hover:bg-sky-800 border border-sky-400/50 text-sky-200 font-black text-sm sm:text-base cursor-pointer inline-flex items-center gap-2">
+        <svg class="w-5 h-5 fill-sky-300" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        <span>إظهار الإجابة</span>
+      </button>
+    </div>
+
+    <div class="hidden xl:flex items-center text-xs sm:text-sm font-black text-slate-200">
+      <span class="gold-shimmer-text ml-2">تحت إشراف:</span>
+      <span>أ.م/ مريهان مقلد</span>
+      <span class="gold-divider-3d"></span>
+      <span>أ.م.د/ مروة زغلول</span>
+      <span class="gold-divider-3d"></span>
+      <span>م.م/ هبة بهريز</span>
+    </div>
+
+    <div class="flex items-center">
+      <button onclick="endMatch()" class="btn-3d px-6 py-3.5 rounded-xl bg-rose-950/90 hover:bg-rose-900 border border-rose-500/50 text-rose-200 font-black text-xs sm:text-sm cursor-pointer inline-flex items-center gap-2">
+        <svg class="w-5 h-5" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg>
+        <span>إنهاء وإعلان الفائز</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 4. شاشة الانتقال للمرحلة الثانية ================= -->
+<div id="stage-transition-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
+  <div class="royal-dark-card royal-crown-card winner-glow max-w-xl w-full rounded-3xl p-8 text-center my-auto animate-slide-up">
+    <div class="inline-block px-4 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs font-black mb-3">
+      اكتملت المرحلة الأولى (10 أسئلة)
+    </div>
+    <h2 class="text-3xl sm:text-5xl font-black gold-shimmer-text mb-3 leading-tight">
+      هننتقل للمرحلة الجاية! ⚡
+    </h2>
+    <p class="text-xl sm:text-2xl font-black text-white mb-2">
+      المرحلة الثانية: مرحلة الضعف (×2)
+    </p>
+    <p class="text-sm text-slate-300 mb-6">
+      الأسئلة الـ 10 القادمة كل سؤال بـ <span class="text-amber-300 font-black">20 نقطة كاملة</span>
+    </p>
+    <button id="continue-stage2-btn" onclick="startStageTwo()" class="dark-gold-btn px-10 py-4 rounded-2xl font-black text-lg cursor-pointer">
+      <span class="gold-shimmer-text">بدء المرحلة الثانية (الضعف)</span>
     </button>
   </div>
 </div>
 
-<!-- ================= 3. شاشة اللعب الرئيسية للهوست ================= -->
-<div id="host-game-screen" class="ui-layer hidden p-3 justify-between overflow-y-auto">
-  <div class="max-w-6xl w-full mx-auto grid grid-cols-12 gap-3 items-center">
-    <div id="host-team1-box" class="col-span-4 royal-dark-card rounded-xl p-3 border-r-2 border-r-rose-500 flex items-center justify-between">
-      <div>
-        <input id="team1-name-input" value="الفريق الأول" onchange="syncTeamNames()" class="bg-transparent font-black text-base sm:text-xl text-rose-400 w-28 sm:w-40 focus:outline-none">
-        <div class="flex gap-1 mt-1">
-          <button onclick="adjustScore('team1', -10)" class="px-2 py-0.5 bg-slate-900 rounded text-xs font-bold text-slate-300">-10</button>
-          <button onclick="adjustScore('team1', 10)" class="px-2 py-0.5 bg-slate-900 rounded text-xs font-bold text-amber-300">+10</button>
-        </div>
-      </div>
-      <div id="host-team1-score" class="text-3xl sm:text-5xl font-black gold-shimmer-text">0</div>
-    </div>
-
-    <div class="col-span-4 royal-dark-card rounded-xl p-2 text-center">
-      <div id="round-title-display" class="text-sm font-black gold-shimmer-text">المرحلة الأولى</div>
-      <div id="stage-indicator-pill" class="text-xs font-bold text-sky-300">10 نقاط</div>
-    </div>
-
-    <div id="host-team2-box" class="col-span-4 royal-dark-card rounded-xl p-3 border-l-2 border-l-blue-500 flex items-center justify-between">
-      <div id="host-team2-score" class="text-3xl sm:text-5xl font-black gold-shimmer-text">0</div>
-      <div class="text-left">
-        <input id="team2-name-input" value="الفريق الثاني" onchange="syncTeamNames()" class="bg-transparent text-left font-black text-base sm:text-xl text-blue-400 w-28 sm:w-40 focus:outline-none">
-        <div class="flex justify-end gap-1 mt-1">
-          <button onclick="adjustScore('team2', 10)" class="px-2 py-0.5 bg-slate-900 rounded text-xs font-bold text-amber-300">+10</button>
-          <button onclick="adjustScore('team2', -10)" class="px-2 py-0.5 bg-slate-900 rounded text-xs font-bold text-slate-300">-10</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- شريط التقدم للأسئلة -->
-  <div class="max-w-6xl w-full mx-auto my-2 bg-slate-950/80 rounded-full h-2.5 overflow-hidden border border-amber-400/20">
-    <div id="question-progress-bar" class="gold-shimmer-bar h-full w-0 transition-all duration-300"></div>
-  </div>
-
-  <div class="my-auto max-w-6xl w-full mx-auto py-2">
-    <div id="buzz-banner" class="hidden mb-2 py-2 px-6 rounded-xl text-center font-black text-lg sm:text-xl shadow-xl"></div>
-    <div class="royal-dark-card rounded-3xl p-5 sm:p-7 relative">
-      <div class="flex items-center justify-between mb-3">
-        <span id="q-badge" class="px-3 py-1 rounded-full bg-slate-950 border border-amber-400/40 text-amber-300 text-xs font-black">سؤال 1 من 35</span>
-        <div class="flex items-center gap-2">
-          <div id="host-timer-pill" class="px-4 py-1 rounded-full bg-slate-950 border border-amber-400 text-amber-300 font-black text-lg">
-            <span id="host-timer">20</span>
-          </div>
-          <button onclick="toggleMute()" id="mute-btn" class="p-2 rounded-xl bg-slate-900 text-amber-200 text-xs font-bold">الصوت: مفعل</button>
-        </div>
-      </div>
-
-      <h2 id="host-question-text" class="en-font text-lg sm:text-2xl font-bold text-white leading-snug text-center my-3 min-h-[60px] flex items-center justify-center"></h2>
-      <div id="host-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4"></div>
-      <div id="explanation-box" class="hidden mt-3 p-3 rounded-xl bg-emerald-950/90 border border-emerald-400/50 text-emerald-100 text-xs sm:text-sm font-bold text-right"></div>
-    </div>
-  </div>
-
-  <!-- شريط التحكم السفلي -->
-  <div class="max-w-6xl w-full mx-auto royal-dark-card rounded-2xl p-3 flex flex-wrap items-center justify-between gap-4">
-    <div class="flex flex-wrap items-center gap-5 sm:gap-7">
-      <button id="next-q-btn" onclick="nextQuestion()" class="dark-gold-btn px-6 py-3 rounded-xl font-black text-sm cursor-pointer">
-        <span class="gold-shimmer-text" id="next-q-btn-label">السؤال التالي</span>
-      </button>
-      <button onclick="unlockBuzzers()" class="btn-3d px-5 py-3 rounded-xl bg-slate-900 border border-amber-400/50 text-amber-300 font-black text-sm cursor-pointer">فتح الجرس</button>
-      <button onclick="revealAnswer()" class="btn-3d px-5 py-3 rounded-xl bg-sky-900/90 border border-sky-400/50 text-sky-200 font-black text-sm cursor-pointer">إظهار الإجابة</button>
-    </div>
-    <button onclick="endMatch()" class="btn-3d px-5 py-3 rounded-xl bg-rose-950/90 border border-rose-500/50 text-rose-200 font-black text-xs cursor-pointer">إنهاء المسابقة</button>
-  </div>
-</div>
-
-<!-- ================= لوحة إعلان اسم الفقرة ================= -->
-<div id="round-intro-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
-  <div class="royal-dark-card max-w-md w-full rounded-3xl p-7 text-center my-auto animate-slide-up">
-    <div class="text-amber-300 font-extrabold text-xs mb-2">استعدوا للمواجهة</div>
-    <h2 id="round-intro-name" class="text-2xl sm:text-3xl font-black gold-shimmer-text mb-3">المرحلة الأولى</h2>
-    <p id="round-intro-desc" class="text-xs sm:text-sm font-bold text-slate-300 mb-5">أسئلة تخصصية سريعة</p>
-    <button onclick="closeRoundIntro()" class="dark-gold-btn px-8 py-3 rounded-xl font-black text-sm cursor-pointer"><span class="gold-shimmer-text">بدء الفقرة ◀</span></button>
-  </div>
-</div>
-
-<!-- ================= شاشة الانتقال للمرحلة الثانية ================= -->
-<div id="stage-transition-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
-  <div class="royal-dark-card max-w-lg w-full rounded-3xl p-7 text-center my-auto animate-slide-up">
-    <h2 class="text-2xl sm:text-4xl font-black gold-shimmer-text mb-2">المرحلة الثانية: وصلنا للدابل (×2)</h2>
-    <p class="text-xs sm:text-sm text-slate-300 mb-5">الأسئلة القادمة كل سؤال بـ 20 نقطة كاملة!</p>
-    <button onclick="startStageTwo()" class="dark-gold-btn px-8 py-3 rounded-xl font-black text-sm cursor-pointer"><span class="gold-shimmer-text">بدء المرحلة الثانية</span></button>
-  </div>
-</div>
-
-<!-- ================= شاشة الموبايل ================= -->
-<div id="team-screen" class="ui-layer hidden p-3 justify-between">
-  <div class="royal-dark-card rounded-2xl p-3 flex items-center justify-between border-b border-amber-400/40">
-    <div>
-      <div class="text-[10px] text-amber-300 font-bold">اسم الفريق</div>
-      <h2 id="team-header-name" class="text-lg font-black text-white">—</h2>
-      <div id="team-stage-pill" class="text-[10px] font-bold text-sky-300 mt-0.5">المرحلة الأولى</div>
-    </div>
+<!-- ================= 5. شاشة الموبايل ================= -->
+<div id="team-screen" class="ui-layer hidden p-4 justify-between">
+  <div class="royal-dark-card rounded-2xl p-3.5 px-4 flex items-center justify-between border-b border-amber-400/40">
     <div class="flex items-center gap-3">
-      <div id="team-timer-pill" class="hidden px-3 py-1 rounded-xl bg-slate-950 border border-amber-400 text-amber-300 font-black text-sm"></div>
-      <div class="text-left bg-slate-950 px-3 py-1 rounded-xl border border-amber-400/35">
-        <div class="text-[9px] text-slate-400 font-bold">النقاط</div>
-        <div id="team-my-score" class="text-xl font-black gold-shimmer-text">0</div>
+      <div class="logo-3d-ring-sm"><img src="pharmacy-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div>
+        <div class="text-[10px] text-amber-300 font-bold">اسم الفريق</div>
+        <h2 id="team-header-name" class="text-xl sm:text-2xl font-black text-white leading-tight">—</h2>
       </div>
+    </div>
+    <div class="text-left bg-slate-950/90 px-4 py-1.5 rounded-xl border border-amber-400/35">
+      <div class="text-[10px] text-slate-400 font-bold">النقاط</div>
+      <div id="team-my-score" class="text-2xl font-black gold-shimmer-text leading-tight">0</div>
     </div>
   </div>
 
   <div id="team-play-area" class="my-auto flex flex-col items-center justify-center gap-4 w-full max-w-md mx-auto">
-    <div id="team-status-box" class="w-full royal-dark-card rounded-2xl p-3 text-center">
-      <div id="team-status-text" class="text-sm font-black text-amber-300">في انتظار بدء المسابقة...</div>
+    <div class="flex items-center gap-2">
+      <span id="team-stage-pill" class="px-4 py-1 rounded-full bg-slate-950 border border-amber-400/35 text-amber-300 text-xs font-black">
+        المرحلة الأولى (10 نقاط)
+      </span>
+      <span id="team-timer-pill" class="hidden px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400 text-amber-300 text-xs font-black">
+        15 ث
+      </span>
+    </div>
+
+    <div id="team-status-box" class="w-full royal-dark-card rounded-2xl p-3.5 text-center">
+      <div id="team-status-text" class="text-base sm:text-lg font-black text-amber-300">في انتظار اكتمال الفريقين وبدء المسابقة...</div>
     </div>
 
     <div id="team-buzzer-wrapper" class="buzzer-rig my-2">
-      <div id="buzzer-ring-anim" class="absolute inset-0 rounded-full border-2 border-amber-400/60 animate-ping pointer-events-none"></div>
+      <div id="buzzer-ring-anim" class="buzzer-orbit-ring hidden"></div>
+      <div id="buzzer-aura" class="buzzer-glow-aura bg-rose-500"></div>
       <div class="buzzer-chassis">
         <button id="team-buzzer-btn" onclick="pressBuzzer()" disabled class="buzzer-dome buzzer-dome-team1">
-          <span id="buzzer-main-label" class="text-2xl font-black text-white">اضغط!</span>
-          <span id="buzzer-sub-label" class="text-[10px] font-bold text-white/80">BUZZER</span>
+          <svg class="w-10 h-10 fill-white/95 mb-1 drop-shadow" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+          <span id="buzzer-main-label" class="text-3xl sm:text-4xl font-black text-white tracking-wider drop-shadow-md">اضغط!</span>
+          <span id="buzzer-sub-label" class="en-font text-[11px] font-bold text-white/80 tracking-widest mt-1">BUZZER</span>
         </button>
       </div>
     </div>
-    <div id="team-options-box" class="hidden w-full grid grid-cols-1 gap-2"></div>
+
+    <div id="team-options-box" class="hidden w-full grid grid-cols-1 gap-2.5 animate-slide-up"></div>
   </div>
 
-  <div id="team-end-area" class="hidden my-auto w-full max-w-md mx-auto">
-    <div id="team-end-card" class="royal-dark-card rounded-3xl p-6 text-center">
-      <div id="team-end-emoji" class="text-4xl mb-2">🏆</div>
-      <h2 id="team-end-headline" class="text-2xl font-black gold-shimmer-text mb-2">نتيجة المسابقة</h2>
-      <div id="team-end-subtext" class="text-xs font-bold text-slate-300 mb-3">انتهت المواجهة</div>
-      <div id="team-end-scores" class="text-base font-black text-amber-300"></div>
+  <div id="team-end-area" class="hidden my-auto w-full max-w-md mx-auto animate-slide-up">
+    <div id="team-end-card" class="royal-dark-card royal-crown-card rounded-3xl p-8 text-center">
+      <div class="finale-3d-rig">
+        <div class="finale-orbit-outer"></div>
+        <div class="finale-orbit-inner"></div>
+        <div class="finale-glow-aura"></div>
+        <div class="finale-dome-chassis">
+          <div class="finale-dome-core">
+            <div id="team-end-emoji" class="text-5xl grad-cap-anim">🏆🎓</div>
+          </div>
+        </div>
+      </div>
+      <h2 id="team-end-headline" class="text-4xl font-black gold-shimmer-text mb-3">مببروووك!</h2>
+      <p id="team-end-subtext" class="text-base font-bold text-slate-200 mb-6"></p>
+      <div class="bg-slate-950/90 rounded-2xl p-4 border border-amber-400/35">
+        <div class="text-xs text-slate-400 mb-1">النتيجة النهائية للمباراة</div>
+        <div id="team-end-scores" class="text-lg font-black text-amber-300"></div>
+      </div>
     </div>
   </div>
+
+  <div class="text-center text-[11px] text-slate-400 font-bold">كلية الصيدلة • جامعة المنصورة الأهلية</div>
 </div>
 
-<!-- ================= نافذة الـ QR ================= -->
+<!-- ================= نافذة الـ QR Code ================= -->
 <div id="qr-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4">
-  <div class="royal-dark-card max-w-sm w-full rounded-3xl p-5 text-center my-auto">
-    <h3 class="text-lg font-black gold-shimmer-text mb-3">رمز الانضمام للمسابقة</h3>
-    <div class="qr-white-card mb-4"><div id="qrcode-container"></div></div>
-    <button onclick="toggleQrModal(false)" class="dark-gold-btn w-full py-2.5 rounded-xl font-black text-xs cursor-pointer"><span class="gold-shimmer-text">إغلاق</span></button>
+  <div class="royal-dark-card royal-crown-card max-w-sm w-full rounded-3xl p-6 text-center my-auto">
+    <h3 class="text-xl font-black gold-shimmer-text mb-4">رمز الانضمام للمسابقة</h3>
+    <div class="qr-white-card mb-5">
+      <div id="qrcode-container"></div>
+    </div>
+    <button onclick="toggleQrModal(false)" class="dark-gold-btn w-full py-3 rounded-xl font-black text-sm cursor-pointer">
+      <span class="gold-shimmer-text">إغلاق</span>
+    </button>
   </div>
 </div>
 
-<!-- ================= شاشة الفائز النهائية ================= -->
+<!-- ================= شاشة النتيجة النهائية للهوست ================= -->
 <div id="winner-modal" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4 overflow-y-auto">
-  <div class="royal-dark-card max-w-md w-full rounded-3xl p-6 text-center my-auto">
-    <div class="text-4xl mb-2">🏆🎓</div>
-    <h2 id="winner-title" class="text-2xl font-black gold-shimmer-text mb-2">الفائز</h2>
-    <div id="final-scores-summary" class="text-sm font-bold text-amber-300 mb-4"></div>
-    <div class="grid grid-cols-2 gap-2">
-      <button onclick="switchToNewTeams()" class="dark-gold-btn py-2.5 rounded-xl font-black text-xs cursor-pointer"><span class="gold-shimmer-text">فريق تاني</span></button>
-      <button onclick="closeCompetition()" class="dark-gold-btn py-2.5 rounded-xl font-black text-xs cursor-pointer"><span class="gold-shimmer-text">ختام المسابقة</span></button>
+  <div class="royal-dark-card royal-crown-card winner-glow max-w-xl w-full rounded-3xl p-7 sm:p-9 text-center my-auto animate-slide-up">
+    <div class="flex items-center justify-center gap-4 mb-3">
+      <div class="logo-3d-ring-sm"><img src="mnu-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div class="logo-3d-ring-sm"><img src="pharmacy-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div class="logo-3d-ring-sm"><img src="pharma-dept-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+    </div>
+
+    <div class="finale-3d-rig">
+      <div class="finale-orbit-outer"></div>
+      <div class="finale-orbit-inner"></div>
+      <div class="finale-glow-aura"></div>
+      <div class="finale-dome-chassis">
+        <div class="finale-dome-core">
+          <span class="text-5xl grad-cap-anim">🏆🎓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-amber-300 font-bold text-sm mb-1">النتيجة النهائية • مسابقة العباقرة</div>
+    <h2 id="winner-title" class="text-3xl sm:text-5xl font-black gold-shimmer-text mb-3">الفائز</h2>
+    <div id="final-scores-summary" class="text-lg sm:text-xl font-bold text-amber-300 bg-slate-950/90 py-3 px-4 rounded-2xl border border-amber-400/35 mb-6"></div>
+
+    <div class="border-t border-amber-400/25 pt-5">
+      <p class="text-lg sm:text-xl font-black text-amber-200 mb-4">نغير الفريقين ولا كفاية؟</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <button onclick="switchToNewTeams()" class="dark-gold-btn py-3.5 px-5 rounded-2xl font-black text-base cursor-pointer flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="url(#gold3d)" viewBox="0 0 24 24"><path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
+          <span class="gold-shimmer-text">فريق تاني (QR جديد)</span>
+        </button>
+        <button onclick="closeCompetition()" class="dark-gold-btn py-3.5 px-5 rounded-2xl font-black text-base cursor-pointer flex items-center justify-center gap-2">
+          <span>🎓</span>
+          <span class="gold-shimmer-text">كفاية (ختام المسابقة)</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ================= شاشة الختام النهائية ================= -->
+<!-- ================= شاشة الختام النهائية عند الهوست ================= -->
 <div id="goodbye-screen" class="fixed inset-0 z-50 hidden glass-3d-backdrop items-center justify-center p-4 overflow-y-auto">
-  <div class="royal-dark-card max-w-lg w-full rounded-3xl p-7 text-center my-auto">
-    <div class="text-5xl mb-2">🎓✨</div>
-    <h2 class="text-2xl font-black gold-shimmer-text mb-2">تمت مسابقة العباقرة بنجاح!</h2>
-    <div id="goodbye-final-scores" class="text-sm font-black text-amber-300 mb-4"></div>
-    <div class="text-xs font-extrabold text-amber-200 mb-4">جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم</div>
-    <button onclick="location.href = window.location.href.split('?')[0]" class="dark-gold-btn px-6 py-2.5 rounded-xl font-black text-xs cursor-pointer"><span class="gold-shimmer-text">الرئيسية</span></button>
+  <div class="royal-dark-card royal-crown-card max-w-2xl w-full rounded-3xl p-8 sm:p-10 text-center my-auto animate-slide-up">
+    <div class="flex items-center justify-center gap-6 mb-4">
+      <div class="logo-3d-ring"><img src="mnu-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div class="logo-3d-ring"><img src="pharmacy-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+      <div class="logo-3d-ring"><img src="pharma-dept-logo.jpg" onerror="this.parentElement.style.display='none'"></div>
+    </div>
+
+    <div class="finale-3d-rig">
+      <div class="finale-orbit-outer"></div>
+      <div class="finale-orbit-inner"></div>
+      <div class="finale-glow-aura"></div>
+      <div class="finale-dome-chassis">
+        <div class="finale-dome-core">
+          <span class="text-5xl sm:text-6xl grad-cap-anim">🎓✨</span>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-3xl sm:text-5xl font-black gold-shimmer-text mb-2">
+      تمت مسابقة العباقرة بنجاح!
+    </h2>
+    <p class="text-base sm:text-lg font-bold text-slate-200 mb-4">
+      كل الشكر والتقدير لجميع الفرق المشاركة على الأداء العلمي المشرف
+    </p>
+
+    <div id="goodbye-final-scores" class="text-sm sm:text-lg font-black text-amber-300 bg-slate-950/90 border border-amber-400/35 rounded-xl py-2.5 px-6 mb-5 inline-block shadow-lg"></div>
+
+    <div class="text-sm sm:text-base font-extrabold text-amber-200 mb-5">
+      جامعة المنصورة الأهلية • كلية الصيدلة • قسم الأدوية والسموم
+    </div>
+
+    <div class="bg-slate-950/90 border border-amber-400/35 rounded-2xl py-3.5 px-7 mb-6 inline-block shadow-inner">
+      <div class="text-xs gold-shimmer-text font-extrabold mb-1.5">تحت إشراف</div>
+      <div class="text-sm sm:text-base font-black text-white flex flex-wrap items-center justify-center">
+        <span>أ.م/ مريهان مقلد[cite: 1, 3]</span>
+        <span class="gold-divider-3d"></span>
+        <span>أ.م.د/ مروة زغلول[cite: 2]</span>
+        <span class="gold-divider-3d"></span>
+        <span>م.م/ هبة بهريز[cite: 4]</span>
+      </div>
+    </div>
+
+    <div>
+      <button onclick="location.href = window.location.href.split('?')[0]" class="dark-gold-btn px-8 py-3 rounded-xl font-black text-sm cursor-pointer">
+        <span class="gold-shimmer-text">العودة للشاشة الرئيسية</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <script>
-  // بنك الأسئلة الـ 35 مقسماً على 5 مراحل (كل مرحلة 7 أسئلة بدون أسئلة توصيل)
   const COMPETITION_QUESTIONS = [
-    // المرحلة الأولى: أساسيات ومقاومة الإنسولين (1 إلى 7)
-    { num: 1, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q1. Insulin resistance is best defined as:", opts: ["Complete absence of insulin secretion", "Failure of body cells to respond adequately to insulin", "Increased insulin sensitivity", "Destruction of pancreatic alpha cells"], ans: 1, exp: "الخلايا لا تستجيب للإنسولين بشكل طبيعي، وبالتالي يحتاج الجسم لجرعات أكبر." },
-    { num: 2, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q2. Which of the following drugs may cause insulin resistance?", opts: ["Metformin", "Acarbose", "Corticosteroids", "Sitagliptin"], ans: 2, exp: "Corticosteroids from the lecture can cause insulin resistance." },
-    { num: 3, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q3. Which of the following is NOT a precipitating factor for insulin resistance?", opts: ["Pregnancy", "Severe infection", "Corticosteroids", "Increased insulin receptor sensitivity"], ans: 3, exp: "زيادة حساسية المستقبلات تقلل insulin resistance." },
-    { num: 4, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q4. Which of the following drugs improves insulin receptor sensitivity?", opts: ["Glibenclamide", "Metformin", "Repaglinide", "Chlorpropamide"], ans: 1, exp: "Metformin improves insulin sensitivity." },
-    { num: 5, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q5. Which of the following is a first-generation sulfonylurea?", opts: ["Glimepiride", "Gliclazide", "Tolbutamide", "Glibenclamide"], ans: 2, exp: "Tolbutamide is a first-generation sulfonylurea." },
-    { num: 6, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q6. Which of the following is a third-generation sulfonylurea?", opts: ["Tolbutamide", "Chlorpropamide", "Gliclazide", "Glimepiride"], ans: 3, exp: "Glimepiride is a third-generation sulfonylurea." },
-    { num: 7, stage: 1, roundName: "المرحلة الأولى: أساسيات ومقاومة الإنسولين", q: "Q7. Sulfonylureas increase insulin secretion by:", opts: ["Opening ATP-sensitive potassium channels", "Closing ATP-sensitive potassium channels", "Blocking calcium channels", "Activating glucagon secretion"], ans: 1, exp: "Closure of K+ channels leads to insulin release." },
+    // الفقرة الأولى: أسئلة مقاومة الأنسولين والسلفونيلوريا (10 أسئلة بـ 10 نقاط)
+    {
+      num: 1, stage: 1,
+      q: "Q1. Insulin resistance is defined as:",
+      opts: ["Increased insulin secretion from pancreatic beta cells.", "Failure of body cells to respond adequately to insulin.", "Complete absence of insulin secretion.", "Increased glucose uptake by peripheral tissues."],
+      ans: 1,
+      exp: "الخلية لا تستجيب للإنسولين بشكل كافٍ، وبالتالي يحتاج الجسم جرعات أكبر لتحقيق نفس التأثير."
+    },
+    {
+      num: 2, stage: 1,
+      q: "Q2. Which of the following drugs may cause insulin resistance?",
+      opts: ["Metformin", "Pioglitazone", "Corticosteroids", "Acarbose"],
+      ans: 2,
+      exp: "Corticosteroids can cause insulin resistance."
+    },
+    {
+      num: 3, stage: 1,
+      q: "Q3. Which of the following is NOT a precipitating factor for insulin resistance?",
+      opts: ["Pregnancy", "Severe infection", "Corticosteroids", "Increased insulin receptor sensitivity"],
+      ans: 3,
+      exp: "زيادة حساسية المستقبلات تقلل insulin resistance."
+    },
+    {
+      num: 4, stage: 1,
+      q: "Q4. Which of the following drugs improves insulin receptor sensitivity?",
+      opts: ["Glibenclamide", "Metformin", "Repaglinide", "Chlorpropamide"],
+      ans: 1,
+      exp: "Metformin improves insulin sensitivity."
+    },
+    {
+      num: 5, stage: 1,
+      q: "Q5. Which of the following is a first-generation sulfonylurea?",
+      opts: ["Glimepiride", "Gliclazide", "Tolbutamide", "Glibenclamide"],
+      ans: 2,
+      exp: "- First generation: Tolbutamide, Chlorpropamide. | - Second generation: Glibenclamide, Gliclazide. | - Third generation: Glimepiride."
+    },
+    {
+      num: 6, stage: 1,
+      q: "Q6. Which of the following is a third-generation sulfonylurea?",
+      opts: ["Tolbutamide", "Chlorpropamide", "Gliclazide", "Glimepiride"],
+      ans: 3,
+      exp: "Glimepiride is a third-generation sulfonylurea."
+    },
+    {
+      num: 7, stage: 1,
+      q: "Q7. Sulfonylureas increase insulin secretion by:",
+      opts: ["Opening ATP-sensitive potassium channels.", "Closing ATP-sensitive potassium channels.", "Blocking calcium channels.", "Activating glucagon secretion."],
+      ans: 1,
+      exp: "Sulfonylureas close ATP-sensitive potassium channels to stimulate insulin release."
+    },
+    {
+      num: 8, stage: 1,
+      q: "Q8. Closure of potassium channels in pancreatic beta cells results in:",
+      opts: ["Hyperpolarization.", "Beta-cell depolarization.", "Decreased calcium influx.", "Decreased insulin secretion."],
+      ans: 1,
+      exp: "K+ channel closure → Depolarization → Ca²⁺ influx → Insulin release."
+    },
+    {
+      num: 9, stage: 1,
+      q: "Q9. Sulfonylureas increase insulin secretion mainly by:",
+      opts: ["Increasing insulin secreted during each pulse.", "Increasing basal insulin secretion only.", "Increasing insulin receptor numbers.", "Inhibiting hepatic gluconeogenesis."],
+      ans: 0,
+      exp: "They increase the amount of insulin secreted during each pulse."
+    },
+    {
+      num: 10, stage: 1,
+      q: "Q10. Which of the following is a major adverse effect of sulfonylureas?",
+      opts: ["Lactic acidosis", "Hypoglycemia", "Flatulence", "Pancreatitis"],
+      ans: 1,
+      exp: "Hypoglycemia is a major adverse effect of sulfonylureas."
+    },
 
-    // المرحلة الثانية: الدابل (×2) - الأجيال والمحفزات (8 إلى 14)
-    { num: 8, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q8. Closure of potassium channels in pancreatic beta cells results in:", opts: ["Hyperpolarization", "Beta-cell depolarization", "Decreased calcium influx", "Decreased insulin secretion"], ans: 1, exp: "K+ channel closure leads to depolarization." },
-    { num: 9, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q9. Sulfonylureas increase insulin secretion mainly by:", opts: ["Increasing insulin secreted during each pulse", "Increasing basal insulin secretion only", "Increasing insulin receptor numbers", "Inhibiting hepatic gluconeogenesis"], ans: 0, exp: "Increasing insulin secreted during each pulse." },
-    { num: 10, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q10. Which of the following is a major adverse effect of sulfonylureas?", opts: ["Lactic acidosis", "Hypoglycemia", "Flatulence", "Pancreatitis"], ans: 1, exp: "Hypoglycemia is a major adverse effect." },
-    { num: 11, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q11. Which sulfonylurea is particularly associated with prolonged hypoglycemia?", opts: ["Chlorpropamide", "Tolbutamide", "Gliclazide", "Glimepiride"], ans: 0, exp: "Chlorpropamide طويل المفعول ويزيد خطر hypoglycemia." },
-    { num: 12, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q12. Sulfonylureas are ineffective in type 1 DM because they:", opts: ["Increase intestinal glucose absorption", "Require functioning pancreatic beta cells", "Block insulin receptors", "Increase glucagon secretion"], ans: 1, exp: "Require functioning pancreatic beta cells." },
-    { num: 13, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q13. Which of the following belongs to the meglitinide group?", opts: ["Metformin", "Repaglinide", "Pioglitazone", "Acarbose"], ans: 1, exp: "Repaglinide belongs to meglitinides." },
-    { num: 14, stage: 2, roundName: "المرحلة الثانية: الدابل (×2)", q: "Q14. Meglitinides should be taken:", opts: ["Immediately after meals", "Just before meals", "At bedtime", "Once weekly"], ans: 1, exp: "Just before meals (Fast onset + Short duration)." },
+    // الفقرة الثانية: مرحلة الضعف (10 أسئلة بـ 20 نقطة) - تحت الضغط
+    {
+      num: 11, stage: 2,
+      q: "Q11. Which sulfonylurea is particularly associated with prolonged hypoglycemia?",
+      opts: ["Chlorpropamide", "Tolbutamide", "Gliclazide", "Glimepiride"],
+      ans: 0,
+      exp: "Chlorpropamide is associated with prolonged hypoglycemia."
+    },
+    {
+      num: 12, stage: 2,
+      q: "Q12. Sulfonylureas are ineffective in type 1 DM because they:",
+      opts: ["Increase intestinal glucose absorption.", "Require functioning pancreatic beta cells.", "Block insulin receptors.", "Increase glucagon secretion."],
+      ans: 1,
+      exp: "They require functioning pancreatic beta cells which are destroyed in Type 1 DM."
+    },
+    {
+      num: 13, stage: 2,
+      q: "Q13. Which of the following belongs to the meglitinide group?",
+      opts: ["Metformin", "Repaglinide", "Pioglitazone", "Acarbose"],
+      ans: 1,
+      exp: "Repaglinide belongs to meglitinides."
+    },
+    {
+      num: 14, stage: 2,
+      q: "Q14. Meglitinides should be taken:",
+      opts: ["Immediately after meals.", "Just before meals.", "At bedtime.", "Once weekly."],
+      ans: 1,
+      exp: "Fast onset + Short duration → control of postprandial hyperglycemia."
+    },
+    {
+      num: 15, stage: 2,
+      q: "Q15. Which drug can be used in patients allergic to sulfonylureas because it does not contain sulfur?",
+      opts: ["Repaglinide", "Glibenclamide", "Chlorpropamide", "Glimepiride"],
+      ans: 0,
+      exp: "Repaglinide does not contain sulfur and can be used in sulfa allergy."
+    },
+    {
+      num: 16, stage: 2,
+      q: "Q16. The major adverse effect of meglitinides is:",
+      opts: ["Lactic acidosis", "Hypoglycemia", "Fluid retention", "Hepatotoxicity"],
+      ans: 1,
+      exp: "Hypoglycemia is a major adverse effect of meglitinides."
+    },
+    {
+      num: 17, stage: 2,
+      q: "Q17. Metformin decreases blood glucose mainly by:",
+      opts: ["Increasing insulin secretion.", "Decreasing hepatic gluconeogenesis.", "Closing potassium channels.", "Increasing glucagon secretion."],
+      ans: 1,
+      exp: "Metformin decreases hepatic gluconeogenesis."
+    },
+    {
+      num: 18, stage: 2,
+      q: "Q18. Why does metformin rarely cause hypoglycemia when used alone?",
+      opts: ["It increases glucagon secretion.", "It does not stimulate insulin secretion.", "It blocks glucose absorption completely.", "It increases insulin degradation."],
+      ans: 1,
+      exp: "It does not stimulate insulin secretion directly."
+    },
+    {
+      num: 19, stage: 2,
+      q: "Q19. Which of the following is the most common adverse effect of metformin?",
+      opts: ["GIT disturbances", "Hypoglycemia", "Peripheral edema", "Pancreatitis"],
+      ans: 0,
+      exp: "GIT disturbances are very common with metformin."
+    },
+    {
+      num: 20, stage: 2,
+      q: "Q20. Metformin-associated lactic acidosis is more likely to occur in patients with:",
+      opts: ["Severe renal impairment.", "Mild headache.", "Hyperthyroidism.", "Iron deficiency anemia."],
+      ans: 0,
+      exp: "Severe renal impairment increases the risk of lactic acidosis with metformin."
+    },
 
-    // المرحلة الثالثة: المجموعات الدوائية Mechanism & Adverse Effects (15 إلى 21)
-    { num: 15, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q15. Which drug can be used in patients allergic to sulfonylureas because it does not contain sulfur?", opts: ["Repaglinide", "Glibenclamide", "Chlorpropamide", "Glimepiride"], ans: 0, exp: "Repaglinide does not contain sulfur." },
-    { num: 16, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q16. The major adverse effect of meglitinides is:", opts: ["Lactic acidosis", "Hypoglycemia", "Fluid retention", "Hepatotoxicity"], ans: 1, exp: "Hypoglycemia is major." },
-    { num: 17, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q17. Metformin decreases blood glucose mainly by:", opts: ["Increasing insulin secretion", "Decreasing hepatic gluconeogenesis", "Closing potassium channels", "Increasing glucagon secretion"], ans: 1, exp: "Decreasing hepatic gluconeogenesis." },
-    { num: 18, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q18. Why does metformin rarely cause hypoglycemia when used alone?", opts: ["It increases glucagon secretion", "It does not stimulate insulin secretion", "It blocks glucose absorption completely", "It increases insulin degradation"], ans: 1, exp: "It does not stimulate insulin secretion directly." },
-    { num: 19, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q19. Which of the following is the most common adverse effect of metformin?", opts: ["GIT disturbances", "Hypoglycemia", "Peripheral edema", "Pancreatitis"], ans: 0, exp: "GIT disturbances." },
-    { num: 20, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q20. Metformin-associated lactic acidosis is more likely to occur in patients with:", opts: ["Severe renal impairment", "Mild headache", "Hyperthyroidism", "Iron deficiency anemia"], ans: 0, exp: "Severe renal impairment." },
-    { num: 21, stage: 3, roundName: "المرحلة الثالثة: المجموعات والميكانيزم", q: "Q21. Long-term use of metformin may decrease the absorption of:", opts: ["Vitamin C", "Vitamin B12", "Vitamin D", "Vitamin K"], ans: 1, exp: "Vitamin B12." },
-
-    // المرحلة الرابعة: السرعة البرقية PPAR & GLP (22 إلى 28)
-    { num: 22, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q22. Metformin may be beneficial in patients with polycystic ovary syndrome (PCOS) because it:", opts: ["Increases androgen levels", "Lowers androgen levels and improves ovulation", "Increases insulin resistance", "Suppresses ovarian function"], ans: 1, exp: "Lowers androgen levels and improves ovulation." },
-    { num: 23, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q23. Thiazolidinediones act mainly through activation of:", opts: ["PPAR-γ", "DPP-4", "ATP-sensitive potassium channels", "Alpha-glucosidase"], ans: 0, exp: "PPAR-γ." },
-    { num: 24, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q24. Which of the following is a thiazolidinedione?", opts: ["Sitagliptin", "Pioglitazone", "Repaglinide", "Acarbose"], ans: 1, exp: "Pioglitazone." },
-    { num: 25, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q25. Thiazolidinediones increase glucose uptake mainly by increasing the number of:", opts: ["GLUT1", "GLUT2", "GLUT3", "GLUT4"], ans: 3, exp: "GLUT4." },
-    { num: 26, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q26. Why do thiazolidinediones have a slow onset of action?", opts: ["They are poorly absorbed", "They depend on gene regulation", "They require insulin injection", "They inhibit intestinal enzymes"], ans: 1, exp: "They depend on gene regulation." },
-    { num: 27, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q27. Which thiazolidinedione has a more favorable effect on serum lipids?", opts: ["Rosiglitazone", "Pioglitazone", "Both have identical effects", "Neither affects serum lipids"], ans: 1, exp: "Pioglitazone." },
-    { num: 28, stage: 4, roundName: "المرحلة الرابعة: السرعة البرقية", q: "Q28. Thiazolidinediones should be avoided in patients with:", opts: ["Bronchial asthma", "Congestive heart failure", "Iron deficiency anemia", "Peptic ulcer"], ans: 1, exp: "Congestive heart failure (Fluid retention)." },
-
-    // المرحلة الخامسة: تحت الضغط والتحدي الأخير (29 إلى 35)
-    { num: 29, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q29. Which drug has a greater reported risk of myocardial infarction compared with pioglitazone in the lecture?", opts: ["Rosiglitazone", "Metformin", "Repaglinide", "Acarbose"], ans: 0, exp: "Rosiglitazone." },
-    { num: 30, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q30. Acarbose decreases carbohydrate digestion by inhibiting:", opts: ["DPP-4", "Alpha-glucosidase", "PPAR-γ", "SGLT2"], ans: 1, exp: "Alpha-glucosidase." },
-    { num: 31, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q31. GLP-1 is normally inactivated by which enzyme?", opts: ["Alpha-glucosidase", "DPP-4", "ACE", "Lipase"], ans: 1, exp: "DPP-4." },
-    { num: 32, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q32. Which of the following is a GLP-1 mimetic?", opts: ["Sitagliptin", "Exenatide", "Dapagliflozin", "Pramlintide"], ans: 1, exp: "Exenatide." },
-    { num: 33, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q33. GLP-1 mimetics produce all the following effects EXCEPT:", opts: ["Increased insulin secretion", "Decreased glucagon secretion", "Delayed gastric emptying", "Increased appetite"], ans: 3, exp: "Increased appetite (GLP-1 decreases appetite)." },
-    { num: 34, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q34. Sitagliptin lowers blood glucose by:", opts: ["Inhibiting DPP-4", "Activating PPAR-γ", "Blocking SGLT2", "Inhibiting alpha-glucosidase"], ans: 0, exp: "Inhibiting DPP-4." },
-    { num: 35, stage: 5, roundName: "المرحلة الخامسة: تحت الضغط", q: "Q35. Pramlintide is a synthetic analog of:", opts: ["GLP-1", "Glucagon", "Amylin", "Insulin"], ans: 2, exp: "Amylin." }
+    // الفقرة الثالثة: أسئلة تحت الضغط (10 أسئلة بـ 20 نقطة)
+    {
+      num: 21, stage: 2,
+      q: "Q21. Long-term use of metformin may decrease the absorption of:",
+      opts: ["Vitamin C", "Vitamin B12", "Vitamin D", "Vitamin K"],
+      ans: 1,
+      exp: "Long-term use may decrease Vitamin B12 absorption."
+    },
+    {
+      num: 22, stage: 2,
+      q: "Q22. Metformin may be beneficial in patients with polycystic ovary syndrome (PCOS) because it:",
+      opts: ["Increases androgen levels.", "Lowers androgen levels and improves ovulation.", "Increases insulin resistance.", "Suppresses ovarian function."],
+      ans: 1,
+      exp: "It lowers androgen levels and improves ovulation in PCOS."
+    },
+    {
+      num: 23, stage: 2,
+      q: "Q23. Thiazolidinediones act mainly through activation of:",
+      opts: ["PPAR-γ", "DPP-4", "ATP-sensitive potassium channels", "Alpha-glucosidase"],
+      ans: 0,
+      exp: "Thiazolidinediones act through PPAR-gamma activation."
+    },
+    {
+      num: 24, stage: 2,
+      q: "Q24. Which of the following is a thiazolidinedione?",
+      opts: ["Sitagliptin", "Pioglitazone", "Repaglinide", "Acarbose"],
+      ans: 1,
+      exp: "Pioglitazone is a thiazolidinedione."
+    },
+    {
+      num: 25, stage: 2,
+      q: "Q25. Thiazolidinediones increase glucose uptake mainly by increasing the number of:",
+      opts: ["GLUT1", "GLUT2", "GLUT3", "GLUT4"],
+      ans: 3,
+      exp: "They increase GLUT4 transporter expression."
+    },
+    {
+      num: 26, stage: 2,
+      q: "Q26. Why do thiazolidinediones have a slow onset of action?",
+      opts: ["They are poorly absorbed.", "They depend on gene regulation.", "They require insulin injection.", "They inhibit intestinal enzymes."],
+      ans: 1,
+      exp: "Their action depends on genomic regulation via PPAR-gamma."
+    },
+    {
+      num: 27, stage: 2,
+      q: "Q27. Which thiazolidinedione has a more favorable effect on serum lipids?",
+      opts: ["Rosiglitazone", "Pioglitazone", "Both have identical effects.", "Neither affects serum lipids."],
+      ans: 1,
+      exp: "Pioglitazone has a more favorable effect on serum lipids."
+    },
+    {
+      num: 28, stage: 2,
+      q: "Q28. Thiazolidinediones should be avoided in patients with:",
+      opts: ["Bronchial asthma", "Congestive heart failure", "Iron deficiency anemia", "Peptic ulcer"],
+      ans: 1,
+      exp: "Fluid retention → Peripheral edema → worsens congestive heart failure."
+    },
+    {
+      num: 29, stage: 2,
+      q: "Q29. Which drug has a greater reported risk of myocardial infarction compared with pioglitazone in the lecture?",
+      opts: ["Rosiglitazone", "Metformin", "Repaglinide", "Acarbose"],
+      ans: 0,
+      exp: "Rosiglitazone has a greater reported risk of myocardial infarction."
+    },
+    {
+      num: 30, stage: 2,
+      q: "Q30. Acarbose decreases carbohydrate digestion by inhibiting:",
+      opts: ["DPP-4", "Alpha-glucosidase", "PPAR-γ", "SGLT2"],
+      ans: 1,
+      exp: "Acarbose inhibits alpha-glucosidase in the intestinal brush border."
+    }
   ];
 
   let roomId = '';
-  let myRole = ''; 
+  let myRole = ''; // 'host' | 'team1' | 'team2'
   let peer = null;
   let hostConn = null;
   let teamConns = { team1: null, team2: null };
@@ -439,7 +1024,8 @@
     }
     if (!tickSynth) {
       tickSynth = new Tone.MembraneSynth({
-        pitchDecay: 0.015, octaves: 3,
+        pitchDecay: 0.015,
+        octaves: 3,
         oscillator: { type: 'sine' },
         envelope: { attack: 0.001, decay: 0.09, sustain: 0, release: 0.03 }
       }).toDestination();
@@ -451,12 +1037,17 @@
     if (isMuted) return;
     try {
       await ensureAudioReady();
-      if (type === 'buzz') mainSynth.triggerAttackRelease(["C5", "G5", "C6"], "8n");
-      else if (type === 'correct') mainSynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n");
-      else if (type === 'wrong') mainSynth.triggerAttackRelease(["F3", "B2"], "4n");
-      else if (type === 'next') mainSynth.triggerAttackRelease(["E4", "A4"], "16n");
-      else if (type === 'win') mainSynth.triggerAttackRelease(["C5", "E5", "G5", "B5", "C6"], "4n");
-      else if (type === 'tick') {
+      if (type === 'buzz') {
+        mainSynth.triggerAttackRelease(["C5", "G5", "C6"], "8n");
+      } else if (type === 'correct') {
+        mainSynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n");
+      } else if (type === 'wrong') {
+        mainSynth.triggerAttackRelease(["F3", "B2"], "4n");
+      } else if (type === 'next') {
+        mainSynth.triggerAttackRelease(["E4", "A4"], "16n");
+      } else if (type === 'win') {
+        mainSynth.triggerAttackRelease(["C5", "E5", "G5", "B5", "C6"], "4n");
+      } else if (type === 'tick') {
         const note = (roomState.timer % 2 === 0) ? "G4" : "E4";
         tickSynth.triggerAttackRelease(note, "32n");
       } else if (type === 'tick_urgent') {
@@ -470,7 +1061,9 @@
   }
 
   function vibrateDevice(pattern) {
-    if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch (e) {} }
+    if (navigator.vibrate) {
+      try { navigator.vibrate(pattern); } catch (e) {}
+    }
   }
 
   function toggleMute() {
@@ -489,11 +1082,14 @@
 
   function checkRoomAvailability(targetRoomId) {
     if (!targetRoomId || myRole !== '') return;
+
     if (probePeer) { try { probePeer.destroy(); } catch (e) {} }
     probePeer = new Peer();
     probePeer.on('open', () => {
       const conn = probePeer.connect('mnu-abakera-' + targetRoomId, { reliable: true });
-      conn.on('open', () => { conn.send({ type: 'PROBE' }); });
+      conn.on('open', () => {
+        conn.send({ type: 'PROBE' });
+      });
       conn.on('data', (data) => {
         if (data.type === 'PROBE_RESULT') {
           if (data.team1Connected && data.team2Connected) {
@@ -520,6 +1116,7 @@
       document.getElementById('lobby-screen').classList.add('hidden');
       document.getElementById('host-waiting-screen').classList.remove('hidden');
       document.getElementById('host-game-screen').classList.add('hidden');
+
       generateRoomQR(roomId);
       renderUI();
     });
@@ -527,7 +1124,11 @@
     peer.on('connection', (conn) => {
       conn.on('data', (data) => {
         if (data.type === 'PROBE') {
-          conn.send({ type: 'PROBE_RESULT', team1Connected: roomState.team1Connected, team2Connected: roomState.team2Connected });
+          conn.send({
+            type: 'PROBE_RESULT',
+            team1Connected: roomState.team1Connected,
+            team2Connected: roomState.team2Connected
+          });
         } else if (data.type === 'JOIN_AUTO') {
           let assignedSlot = null;
           if (!roomState.team1Connected) {
@@ -554,6 +1155,7 @@
           } else {
             playTone('next');
           }
+
           broadcastState();
           renderUI();
         } else if (data.type === 'BUZZ') {
@@ -608,16 +1210,29 @@
 
     const modalContainer = document.getElementById('qrcode-container');
     modalContainer.innerHTML = '';
-    new QRCode(modalContainer, { text: joinUrl, width: 200, height: 200, colorDark: "#000000", colorLight: "#ffffff" });
+    new QRCode(modalContainer, {
+      text: joinUrl,
+      width: 200,
+      height: 200,
+      colorDark: "#000000",
+      colorLight: "#ffffff"
+    });
 
     const mainContainer = document.getElementById('main-qrcode-container');
     mainContainer.innerHTML = '';
-    new QRCode(mainContainer, { text: joinUrl, width: 195, height: 195, colorDark: "#000000", colorLight: "#ffffff" });
+    new QRCode(mainContainer, {
+      text: joinUrl,
+      width: 195,
+      height: 195,
+      colorDark: "#000000",
+      colorLight: "#ffffff"
+    });
   }
 
   function joinCompetitionAuto() {
     ensureAudioReady();
     const enteredName = document.getElementById('custom-team-name-input').value.trim();
+
     if (!enteredName) {
       alert('يرجى كتابة اسم فريقك أولاً');
       document.getElementById('custom-team-name-input').focus();
@@ -632,7 +1247,11 @@
 
     peer.on('open', () => {
       hostConn = peer.connect('mnu-abakera-' + roomId, { reliable: true });
-      hostConn.on('open', () => { hostConn.send({ type: 'JOIN_AUTO', teamName: enteredName }); });
+
+      hostConn.on('open', () => {
+        hostConn.send({ type: 'JOIN_AUTO', teamName: enteredName });
+      });
+
       hostConn.on('data', (data) => {
         if (data.type === 'ROOM_FULL') {
           alert('اكتمل عدد الفرق في هذه المباراة بالفعل.');
@@ -644,8 +1263,10 @@
           document.getElementById('team-screen').classList.remove('hidden');
 
           const btn = document.getElementById('team-buzzer-btn');
+          const aura = document.getElementById('buzzer-aura');
           if (myRole === 'team2') {
             btn.className = "buzzer-dome buzzer-dome-team2";
+            aura.className = "buzzer-glow-aura bg-blue-500";
           }
           renderUI();
         } else if (data.type === 'SESSION_REPLACED') {
@@ -656,6 +1277,7 @@
           renderUI();
         }
       });
+
       hostConn.on('error', () => {
         joinBtn.disabled = false;
         alert('تعذر الاتصال بغرفة المسابقة، يرجى مسح رمز الـ QR مرة أخرى.');
@@ -668,36 +1290,64 @@
     roomState.gameStarted = true;
     document.getElementById('host-waiting-screen').classList.add('hidden');
     document.getElementById('host-game-screen').classList.remove('hidden');
-    showRoundIntro(1, COMPETITION_QUESTIONS[0].roundName, "أسئلة تخصصية سريعة بنظام الجرس");
+    
+    // إظهار شاشة الفقرة الأولى قبل البدء الفعلي للسؤال الأول
+    showParagraphIntroModal(1, "الفقرة الأولى: مقاومة الأنسولين والسلفونيلوريا", () => {
+      nextQuestion();
+    });
   }
 
-  function showRoundIntro(stageNum, title, desc) {
-    const modal = document.getElementById('round-intro-modal');
-    document.getElementById('round-intro-name').innerText = title;
-    document.getElementById('round-intro-desc').innerText = desc;
+  // عرض شاشة تعريفية بكل فقرة قبل بدايتها
+  function showParagraphIntroModal(stageNum, titleText, callback) {
+    let modal = document.getElementById('paragraph-intro-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'paragraph-intro-modal';
+      modal.className = 'fixed inset-0 z-50 flex glass-3d-backdrop items-center justify-center p-4';
+      document.body.appendChild(modal);
+    }
+    
+    let ptsText = (stageNum === 2) ? "المرحلة الثانية: مرحلة الضعف (×2 • 20 نقطة لكل سؤال)" : "الفقرة الأولى: الأسئلة العادية (10 نقاط لكل سؤال)";
+    if (stageNum === 3) ptsText = "الفقرة الثالثة: أسئلة تحت الضغط (20 نقطة لكل سؤال)";
+
+    modal.innerHTML = `
+      <div class="royal-dark-card royal-crown-card winner-glow max-w-xl w-full rounded-3xl p-8 text-center my-auto animate-slide-up">
+        <div class="inline-block px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400 text-amber-300 text-xs font-black mb-3">
+          إعلان الفقرة القادمة
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-black gold-shimmer-text mb-3 leading-tight">
+          ${titleText}
+        </h2>
+        <p class="text-xl sm:text-2xl font-black text-white mb-6">
+          ${ptsText}
+        </p>
+        <button id="start-para-btn" class="dark-gold-btn px-10 py-4 rounded-2xl font-black text-lg cursor-pointer">
+          <span class="gold-shimmer-text">ابدأ الفقرة الآن ◀</span>
+        </button>
+      </div>
+    `;
     modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    playTone('win');
-  }
 
-  function closeRoundIntro() {
-    const modal = document.getElementById('round-intro-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    nextQuestion();
+    document.getElementById('start-para-btn').onclick = () => {
+      modal.classList.add('hidden');
+      if (typeof callback === 'function') callback();
+    };
   }
 
   function nextQuestion() {
     if (!roomState.team1Connected || !roomState.team2Connected) return;
     roomState.gameStarted = true;
 
-    if (roomState.qIndex >= 0 && roomState.qIndex < COMPETITION_QUESTIONS.length - 1) {
-      const nextQObj = COMPETITION_QUESTIONS[roomState.qIndex + 1];
-      const currentQObj = COMPETITION_QUESTIONS[roomState.qIndex];
-      if (nextQObj.roundName !== currentQObj.roundName) {
-        showRoundIntro(nextQObj.stage, nextQObj.roundName, nextQObj.stage === 2 ? "الأسئلة القادمة مضاعفة النقاط (×2)" : "مرحلة جديدة من التحدي");
-        return;
-      }
+    // الانتقال للفقرة الثانية عند السؤال 11 (Q11)
+    if (roomState.qIndex === 9 && roomState.stage === 1 && !roomState.showTransition) {
+      clearInterval(timerInterval);
+      roomState.showTransition = true;
+      roomState.buzzerOpen = false;
+      playTone('win');
+      setArenaState('neutral');
+      broadcastState();
+      renderUI();
+      return;
     }
 
     if (roomState.qIndex >= COMPETITION_QUESTIONS.length - 1) {
@@ -717,7 +1367,9 @@
     roomState.revealed = false;
     roomState.selectedOpt = null;
     roomState.statusMessage = '';
-    roomState.timer = 20;
+    
+    // الفقرة الثالثة (آخر 10 أسئلة): قللنا الوقت 5 ثوانٍ لتصبح 15 ثانية وتسمى "تحت الضغط"
+    roomState.timer = (roomState.qIndex >= 20) ? 15 : 20;
 
     setArenaState('neutral');
     playTone('next');
@@ -727,14 +1379,30 @@
   }
 
   function startStageTwo() {
-    const transModal = document.getElementById('stage-transition-modal');
-    transModal.classList.add('hidden');
-    transModal.classList.remove('flex');
+    document.getElementById('stage-transition-modal').classList.add('hidden');
+    document.getElementById('stage-transition-modal').classList.remove('flex');
+    
+    showParagraphIntroModal(2, "الفقرة الثانية: مرحلة الضعف (الدابل)", () => {
+      roomState.stage = 2;
+      roomState.showTransition = false;
+      roomState.qIndex = 10;
+      const qObj = COMPETITION_QUESTIONS[10];
+      roomState.currentQ = qObj;
+      roomState.buzzerOpen = true;
+      roomState.buzzedTeam = null;
+      roomState.lockedTeams = [];
+      roomState.wrongOptions = [];
+      roomState.revealed = false;
+      roomState.selectedOpt = null;
+      roomState.statusMessage = '';
+      roomState.timer = 20;
 
-    roomState.stage = 2;
-    roomState.showTransition = false;
-    roomState.qIndex = 7;
-    showRoundIntro(2, "المرحلة الثانية: وصلنا للدابل", "الأسئلة القادمة مضاعفة النقاط (×2)");
+      setArenaState('neutral');
+      playTone('next');
+      startTimer();
+      broadcastState();
+      renderUI();
+    });
   }
 
   function startTimer() {
@@ -746,13 +1414,14 @@
 
         const timerPillEl = document.getElementById('host-timer-pill');
         if (timerPillEl) {
-          timerPillEl.classList.toggle('timer-urgent', roomState.timer > 0 && roomState.timer <= 5);
+          timerPillEl.classList.toggle('timer-urgent', !roomState.revealed && roomState.timer > 0 && roomState.timer <= 5);
         }
 
         if (roomState.timer === 0) {
-          if (timerPillEl) timerPillEl.classList.remove('timer-urgent');
           playTone('timeout');
           setArenaState('wrong');
+          if (timerPillEl) timerPillEl.classList.remove('timer-urgent');
+
           if (roomState.buzzedTeam) {
             const timedOutTeam = roomState.buzzedTeam;
             const timedOutName = timedOutTeam === 'team1' ? roomState.team1Name : roomState.team2Name;
@@ -807,7 +1476,7 @@
     roomState.buzzedTeam = null;
     roomState.lockedTeams = [];
     roomState.statusMessage = '';
-    roomState.timer = 20;
+    roomState.timer = (roomState.qIndex >= 20) ? 15 : 20;
     setArenaState('neutral');
     startTimer();
     broadcastState();
@@ -914,11 +1583,11 @@
         const c1 = document.getElementById('wait-card-team1');
         const s1 = document.getElementById('wait-status-team1');
         if (roomState.team1Connected) {
-          c1.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[205px] flex flex-col items-center justify-center border border-rose-500 shadow-[0_0_30px_rgba(244,63,94,0.25)]';
+          c1.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[195px] flex flex-col items-center justify-center border border-rose-500 shadow-[0_0_30px_rgba(244,63,94,0.25)]';
           s1.innerText = roomState.team1Name;
           s1.className = 'text-2xl font-black text-white';
         } else {
-          c1.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[205px] flex flex-col items-center justify-center border border-rose-500/30';
+          c1.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[195px] flex flex-col items-center justify-center border border-rose-500/30';
           s1.innerText = 'في الانتظار';
           s1.className = 'text-xl font-black text-slate-500';
         }
@@ -926,11 +1595,11 @@
         const c2 = document.getElementById('wait-card-team2');
         const s2 = document.getElementById('wait-status-team2');
         if (roomState.team2Connected) {
-          c2.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[205px] flex flex-col items-center justify-center border border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.25)]';
+          c2.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[195px] flex flex-col items-center justify-center border border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.25)]';
           s2.innerText = roomState.team2Name;
           s2.className = 'text-2xl font-black text-white';
         } else {
-          c2.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[205px] flex flex-col items-center justify-center border border-blue-500/30';
+          c2.className = 'royal-dark-card rounded-3xl p-6 text-center min-h-[195px] flex flex-col items-center justify-center border border-blue-500/30';
           s2.innerText = 'في الانتظار';
           s2.className = 'text-xl font-black text-slate-500';
         }
@@ -969,21 +1638,45 @@
         timerPillEl.classList.toggle('timer-urgent', !roomState.revealed && roomState.timer > 0 && roomState.timer <= 5);
       }
 
+      const box1 = document.getElementById('host-team1-box');
+      const box2 = document.getElementById('host-team2-box');
+      box1.classList.toggle('winner-glow', roomState.buzzedTeam === 'team1');
+      box2.classList.toggle('winner-glow', roomState.buzzedTeam === 'team2');
+
       const stagePill = document.getElementById('stage-indicator-pill');
-      const roundTitleDisp = document.getElementById('round-title-display');
-      if (roomState.currentQ) {
-        stagePill.innerText = roomState.currentQ.roundName + (roomState.stage === 2 ? " (×2 • 20 نقطة)" : " (10 نقاط)");
-        roundTitleDisp.innerText = roomState.currentQ.roundName;
+      if (roomState.stage === 2) {
+        if (roomState.qIndex >= 20) {
+          stagePill.innerText = 'الفقرة الثالثة: تحت الضغط (15 ثانية • 20 نقطة)';
+        } else {
+          stagePill.innerText = 'المرحلة الثانية: مرحلة الضعف (×2 • 20 نقطة)';
+        }
+        stagePill.className = 'w-full bg-amber-500/15 border border-amber-400/60 rounded-xl py-1 px-3 text-xs sm:text-sm font-black text-amber-300';
+      } else {
+        stagePill.innerText = 'المرحلة الأولى (10 أسئلة • 10 نقاط)';
+        stagePill.className = 'w-full bg-slate-950/90 border border-amber-400/35 rounded-xl py-1 px-3 text-xs sm:text-sm font-black text-amber-300';
+      }
+
+      const transModal = document.getElementById('stage-transition-modal');
+      if (roomState.showTransition) {
+        transModal.classList.remove('hidden');
+        transModal.classList.add('flex');
+      } else {
+        transModal.classList.add('hidden');
+        transModal.classList.remove('flex');
       }
 
       const currentNum = roomState.qIndex + 1;
-      document.getElementById('question-progress-bar').style.width = `${Math.max(5, (currentNum / 35) * 100)}%`;
+      document.getElementById('question-progress-bar').style.width = `${Math.max(5, (currentNum / 30) * 100)}%`;
 
       const nextBtnLabel = document.getElementById('next-q-btn-label');
-      if (currentNum >= 35) {
-        nextBtnLabel.innerText = 'اكتملت الأسئلة (35/35)';
+      if (currentNum === 10 && roomState.stage === 1) {
+        nextBtnLabel.innerText = 'الانتقال للفقرة الثانية (الدابل)';
+      } else if (currentNum === 20 && roomState.qIndex === 19) {
+        nextBtnLabel.innerText = 'الانتقال للفقرة الثالثة (تحت الضغط)';
+      } else if (currentNum >= 30) {
+        nextBtnLabel.innerText = 'اكتملت جميع الأسئلة (30/30)';
       } else {
-        nextBtnLabel.innerText = `السؤال التالي (${currentNum + 1}/35)`;
+        nextBtnLabel.innerText = `السؤال التالي (${currentNum + 1}/30)`;
       }
 
       const banner = document.getElementById('buzz-banner');
@@ -995,7 +1688,7 @@
         banner.innerText = `⚡ الأسرع في الجرس: ${name}`;
       } else if (roomState.statusMessage) {
         banner.classList.remove('hidden');
-        banner.className = `mb-3 py-3 px-8 rounded-2xl text-center font-black text-xl sm:text-2xl shadow-2xl bg-amber-600 text-white`;
+        banner.className = 'mb-3 py-3 px-8 rounded-2xl text-center font-black text-xl sm:text-2xl shadow-2xl bg-amber-600 text-white';
         banner.innerText = roomState.statusMessage;
       } else {
         banner.classList.add('hidden');
@@ -1004,8 +1697,8 @@
       const expBox = document.getElementById('explanation-box');
 
       if (roomState.currentQ) {
-        const ptsLabel = roomState.stage === 2 ? '20 نقطة (الضعف ×2)' : '10 نقاط';
-        document.getElementById('q-badge').innerText = `سؤال ${roomState.currentQ.num} من 35 • ${ptsLabel}`;
+        const ptsLabel = (roomState.stage === 2 || roomState.qIndex >= 20) ? '20 نقطة' : '10 نقاط';
+        document.getElementById('q-badge').innerText = `سؤال ${roomState.currentQ.num} من 30 • ${ptsLabel}`;
         document.getElementById('host-question-text').innerText = roomState.currentQ.q;
 
         const grid = document.getElementById('host-options-grid');
@@ -1037,8 +1730,16 @@
       document.getElementById('team-my-score').innerText = myRole === 'team1' ? roomState.team1Score : roomState.team2Score;
 
       const teamStagePill = document.getElementById('team-stage-pill');
-      if (roomState.currentQ) {
-        teamStagePill.innerText = roomState.currentQ.roundName;
+      if (roomState.stage === 2) {
+        if (roomState.qIndex >= 20) {
+          teamStagePill.innerText = 'الفقرة الثالثة: تحت الضغط (15 ث • 20 نقطة)';
+        } else {
+          teamStagePill.innerText = 'المرحلة الثانية: مرحلة الضعف (20 نقطة)';
+        }
+        teamStagePill.className = 'px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 text-xs font-black';
+      } else {
+        teamStagePill.innerText = 'المرحلة الأولى (10 نقاط)';
+        teamStagePill.className = 'px-4 py-1 rounded-full bg-slate-950 border border-amber-400/35 text-amber-300 text-xs font-black';
       }
 
       const timerPill = document.getElementById('team-timer-pill');
@@ -1065,21 +1766,29 @@
         scoresEl.innerText = `${roomState.team1Name}: ${roomState.team1Score}  |  ${roomState.team2Name}: ${roomState.team2Score}`;
 
         if (roomState.sessionClosed) {
+          card.className = 'royal-dark-card royal-crown-card rounded-3xl p-8 text-center';
           emoji.innerText = '🎓✨';
           headline.innerText = 'تمت المسابقة بنجاح!';
+          headline.className = 'text-3xl sm:text-4xl font-black gold-shimmer-text mb-3';
           subtext.innerText = 'كل الشكر والتقدير لمشاركتكم المميزة في مسابقة العباقرة بكلية الصيدلة - جامعة المنصورة الأهلية.';
         } else if (roomState.winnerTeam === myRole) {
+          card.className = 'royal-dark-card royal-crown-card winner-glow rounded-3xl p-8 text-center';
           emoji.innerText = '🏆🎓';
           headline.innerText = 'مببروووك!';
+          headline.className = 'text-4xl sm:text-5xl font-black gold-shimmer-text mb-3';
           subtext.innerText = 'ألف مبروك الفوز في مسابقة العباقرة! أداء علمي مشرف.';
         } else if (roomState.winnerTeam === 'tie') {
+          card.className = 'royal-dark-card rounded-3xl p-8 text-center border border-sky-400/50';
           emoji.innerText = '🤝🎓';
           headline.innerText = 'تعادل بطولي!';
+          headline.className = 'text-4xl font-black text-sky-400 mb-3';
           subtext.innerText = 'منافسة قوية وتعادل مستحق بين الفريقين!';
         } else {
+          card.className = 'royal-dark-card rounded-3xl p-8 text-center border border-rose-400/40';
           emoji.innerText = '💪🎓';
           headline.innerText = 'متزعلش متعوضة!';
-          subtext.innerText = 'عملتوا ماتش عالمي وعاش على مجهودكم!';
+          headline.className = 'text-3xl sm:text-4xl font-black text-rose-300 mb-3';
+          subtext.innerText = 'متزعلش متعوضة المرة الجاية بإذن الله.. عملتوا ماتش عالمي وعاش على مجهودكم!';
         }
         return;
       } else {
@@ -1115,12 +1824,15 @@
         statusText.innerText = connectedCount < 2
           ? "تم تسجيل فريقك — في انتظار انضمام الفريق المنافس..."
           : "يلا نبدأ كملنا! في انتظار بدء السؤال الأول...";
+        statusText.className = "text-base sm:text-lg font-black text-emerald-400";
       } else if (roomState.showTransition) {
         buzzWrapper.classList.remove('hidden');
         optsBox.classList.add('hidden');
         statusText.innerText = "هننتقل للمرحلة الجاية: مرحلة الضعف (×2)";
+        statusText.className = "text-base sm:text-lg font-black text-amber-300";
       } else if (roomState.buzzedTeam === myRole && !roomState.revealed) {
         statusText.innerText = `⚡ اختر الإجابة الآن (${roomState.timer} ثانية):`;
+        statusText.className = "text-base sm:text-lg font-black text-emerald-400";
         buzzWrapper.classList.add('hidden');
         optsBox.classList.remove('hidden');
         const letters = ['A', 'B', 'C', 'D'];
@@ -1136,13 +1848,19 @@
         optsBox.classList.add('hidden');
         if (isTeamLocked && !roomState.revealed) {
           statusText.innerText = "انتهت فرصتك في هذا السؤال — الفرصة للفريق المنافس";
+          statusText.className = "text-base sm:text-lg font-black text-rose-400";
         } else if (roomState.buzzerOpen) {
-          statusText.innerText = roomState.lockedTeams.length > 0 ? "فرصتك الذهبية! اضغط الجرس للإجابة" : "الجرس متاح — اضغط للإجابة";
+          statusText.innerText = roomState.lockedTeams.length > 0
+            ? "فرصتك الذهبية! اضغط الجرس للإجابة"
+            : "الجرس متاح — اضغط للإجابة";
+          statusText.className = "text-base sm:text-lg font-black text-amber-300";
         } else if (roomState.buzzedTeam) {
           const otherName = roomState.buzzedTeam === 'team1' ? roomState.team1Name : roomState.team2Name;
           statusText.innerText = `يجيب الآن: ${otherName}`;
+          statusText.className = "text-base sm:text-lg font-black text-rose-400";
         } else {
           statusText.innerText = "في انتظار السؤال التالي...";
+          statusText.className = "text-base font-bold text-slate-300";
         }
       }
     }
@@ -1263,7 +1981,7 @@
     setTimeout(() => checkRoomAvailability(roomId), 300);
   }
 
-  // ================= خلفية الـ DNA ثلاثية الأبعاد =================
+  // ================= خلفية الـ DNA ثلاثية الأبعاد الحلقات المدارية الدائمة =================
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x02050e);
   scene.fog = new THREE.FogExp2(0x02050e, 0.028);
@@ -1318,9 +2036,16 @@
   scene.add(dnaGroup);
 
   const ringGeo1 = new THREE.TorusGeometry(6.8, 0.045, 16, 120);
-  const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.45 });
+  const ringMat1 = new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.45 });
   const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
   ring1.rotation.x = Math.PI / 2.3;
+
+  const ringGeo2 = new THREE.TorusGeometry(8.2, 0.035, 16, 120);
+  const ringMat2 = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.32 });
+  const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+  ring2.rotation.y = Math.PI / 3;
+
+  scene.add(ring1, ring2);
 
   const particlesGeo = new THREE.BufferGeometry();
   const particleCount = 130;
@@ -1380,12 +2105,16 @@
 
   function animate3D() {
     requestAnimationFrame(animate3D);
+
     camera.position.x += (targetCamX - camera.position.x) * 0.05;
     camera.position.z += (targetCamZ - camera.position.z) * 0.05;
     camera.lookAt(0, 0, 0);
 
     dnaGroup.rotation.y += dnaSpeed;
     ring1.rotation.z += 0.004;
+    ring2.rotation.x -= 0.003;
+    ring2.rotation.y += 0.002;
+
     gridHelper.position.z = (gridHelper.position.z + 0.018) % 1;
     particlesMesh.rotation.y += 0.0008;
 
